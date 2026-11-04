@@ -103,3 +103,8 @@ docs/Report/AI_Evidence/*.md
 **/CVSample/**
 .vercel
 .env*
+
+# Large AI models (>100MB rejected by GitHub)
+*.onnx
+backend/packages/ai-models/**/onnx/
+ml/models/

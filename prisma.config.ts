@@ -7,9 +7,9 @@ import { defineConfig } from 'prisma/config';
 dotenv.config({ path: path.resolve(__dirname, '.env') });
 
 export default defineConfig({
-  schema: 'packages/database/prisma/schema.prisma',
+  schema: 'backend/packages/database/prisma/schema.prisma',
   migrations: {
-    path: 'packages/database/prisma/migrations',
+    path: 'backend/packages/database/prisma/migrations',
   },
   datasource: {
     // Prisma CLI needs a direct database URL for migrations. Runtime services

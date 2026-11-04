@@ -1,0 +1,84 @@
+{
+  "coverageMatrix": {
+    "BOSS": {
+      "expectedNavItems": 7,
+      "description": "Dashboard, Approval Queue, All Requests, Interview Results, Department Statistics, Reports, Settings"
+    },
+    "WEB_ADMIN": {
+      "expectedNavItems": 5,
+      "description": "Dashboard, User Management, API & Services Monitor, Maintenance Mode, Settings"
+    },
+    "ADMIN": {
+      "expectedNavItems": 7,
+      "description": "Dashboard, Approval Queue, All Requests, Interview Results, Department Statistics, Reports, Settings"
+    },
+    "DEPARTMENT_HEAD": {
+      "expectedNavItems": 6,
+      "description": "Dashboard, Create Request, My Requests, Interviews, Interview Evaluations, Dept Settings"
+    },
+    "HR_LEADER": {
+      "expectedNavItems": 11,
+      "description": "Dashboard, Request Queue, Campaigns, Task Planner, Talent Pool, Candidate Search, Interview Schedule, Interview Detail, Interview Results, Pipeline Reports, System Notifications"
+    },
+    "CANDIDATE": {
+      "expectedNavItems": 6,
+      "description": "Dashboard, My Profile, Upload CV, Inbox Alerts, Interview Details, My Offers"
+    }
+  },
+  "sidebarNavigation": {
+    "BOSS": [
+      { "label": "Dashboard", "path": "/boss", "icon": "dashboard" },
+      { "label": "Approval Queue", "path": "/boss/approval-queue", "icon": "queue" },
+      { "label": "All Requests", "path": "/boss/requests", "icon": "requests" },
+      { "label": "Interview Results", "path": "/boss/interview-results", "icon": "interviews" },
+      { "label": "Department Statistics", "path": "/boss/dept-stats", "icon": "reports" },
+      { "label": "Reports", "path": "/boss/reports", "icon": "reports" },
+      { "label": "Settings", "path": "/boss/settings", "icon": "settings" }
+    ],
+    "WEB_ADMIN": [
+      { "label": "Dashboard", "path": "/admin", "icon": "dashboard" },
+      { "label": "Users & Permissions", "path": "/admin/users", "icon": "users" },
+      { "label": "API & Service Monitor", "path": "/admin/api-monitor", "icon": "queue" },
+      { "label": "System Maintenance", "path": "/admin/maintenance", "icon": "settings" },
+      { "label": "Settings", "path": "/admin/settings", "icon": "settings" }
+    ],
+    "ADMIN": [
+      { "label": "Dashboard", "path": "/boss", "icon": "dashboard" },
+      { "label": "Approval Queue", "path": "/boss/approval-queue", "icon": "queue" },
+      { "label": "All Requests", "path": "/boss/requests", "icon": "requests" },
+      { "label": "Interview Results", "path": "/boss/interview-results", "icon": "interviews" },
+      { "label": "Department Statistics", "path": "/boss/dept-stats", "icon": "reports" },
+      { "label": "Reports", "path": "/boss/reports", "icon": "reports" },
+      { "label": "Settings", "path": "/boss/settings", "icon": "settings" }
+    ],
+    "DEPARTMENT_HEAD": [
+      { "label": "Dashboard", "path": "/dept-head", "icon": "dashboard" },
+      { "label": "Create Request", "path": "/dept-head/create-request", "icon": "create" },
+      { "label": "My Requests", "path": "/dept-head/requests", "icon": "requests" },
+      { "label": "Interviews", "path": "/dept-head/interviews", "icon": "interviews" },
+      { "label": "Interview Evaluations", "path": "/dept-head/feedback", "icon": "queue" },
+      { "label": "Dept Settings", "path": "/dept-head/settings", "icon": "settings" }
+    ],
+    "HR_LEADER": [
+      { "label": "Dashboard", "path": "/hr", "icon": "dashboard" },
+      { "label": "Request Queue", "path": "/hr/requests", "icon": "queue" },
+      { "label": "Campaigns", "path": "/hr/campaigns", "icon": "campaigns" },
+      { "label": "Task Planner", "path": "/hr/tasks", "icon": "tasks" },
+      { "label": "Talent Pool", "path": "/hr/candidates", "icon": "users" },
+      { "label": "Candidate Search", "path": "/hr/search", "icon": "search" },
+      { "label": "Interview Schedule", "path": "/hr/interviews", "icon": "interviews" },
+      { "label": "Interview Detail", "path": "/hr/interview-detail", "icon": "interviews" },
+      { "label": "Interview Results", "path": "/hr/results", "icon": "queue" },
+      { "label": "Pipeline Reports", "path": "/hr/reports", "icon": "reports" },
+      { "label": "System Notifications", "path": "/hr/notifications", "icon": "notifications" }
+    ],
+    "CANDIDATE": [
+      { "label": "Dashboard", "path": "/candidate", "icon": "dashboard" },
+      { "label": "My Profile", "path": "/candidate/profile", "icon": "profile" },
+      { "label": "Upload CV", "path": "/candidate/upload-cv", "icon": "upload" },
+      { "label": "Inbox Alerts", "path": "/candidate/notifications", "icon": "notifications" },
+      { "label": "Interview Details", "path": "/candidate/interviews", "icon": "interviews" },
+      { "label": "My Offers", "path": "/candidate/offers", "icon": "tasks" }
+    ]
+  }
+}

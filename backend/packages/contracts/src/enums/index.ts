@@ -1,0 +1,195 @@
+/**
+ * Domain enums for the Recruitment Workflow Management System (RMS).
+ *
+ * Enum values are uppercase string literals per architecture convention.
+ * These enums are the single source of truth shared by API, worker, and frontend.
+ */
+
+// â”€â”€â”€ User & Organization â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+export enum UserRole {
+  BOSS = 'BOSS',
+  WEB_ADMIN = 'WEB_ADMIN',
+  ADMIN = 'ADMIN', // Legacy alias kept for backward compatibility
+  DEPARTMENT_HEAD = 'DEPARTMENT_HEAD',
+  HR_LEADER = 'HR_LEADER',
+  CANDIDATE = 'CANDIDATE',
+}
+
+export const isBossRole = (role: unknown): boolean =>
+  role === UserRole.BOSS || role === 'BOSS' || role === UserRole.ADMIN || role === 'ADMIN';
+
+export const isWebAdminRole = (role: unknown): boolean =>
+  role === UserRole.WEB_ADMIN || role === 'WEB_ADMIN';
+
+export const HR_ROLES = [UserRole.HR_LEADER] as const;
+
+export const isHrRole = (role: unknown): role is (typeof HR_ROLES)[number] =>
+  role === UserRole.HR_LEADER;
+
+// â”€â”€â”€ Recruitment Request Lifecycle â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+export enum RecruitmentRequestStatus {
+  DRAFT = 'DRAFT',
+  PENDING_HR_REVIEW = 'PENDING_HR_REVIEW',
+  PENDING_BOSS_APPROVAL = 'PENDING_BOSS_APPROVAL',
+  // Legacy generic review status retained for backward compatibility with old records/clients.
+  PENDING_REVIEW = 'PENDING_REVIEW',
+  APPROVED = 'APPROVED',
+  REJECTED = 'REJECTED',
+  REVISION_NEEDED = 'REVISION_NEEDED',
+  PLANNING = 'PLANNING',
+  PLAN_PENDING_APPROVAL = 'PLAN_PENDING_APPROVAL',
+  PLAN_APPROVED = 'PLAN_APPROVED',
+  ACTIVE = 'ACTIVE',
+  SCREENING = 'SCREENING',
+  INTERVIEWING = 'INTERVIEWING',
+  DECISION_PENDING = 'DECISION_PENDING',
+  INTERVIEW_COMPLETED = 'INTERVIEW_COMPLETED',
+  OFFER_EXTENDED = 'OFFER_EXTENDED',
+  OFFER_ACCEPTED = 'OFFER_ACCEPTED',
+  OFFER_DECLINED = 'OFFER_DECLINED',
+  HIRED = 'HIRED',
+  NOT_HIRED = 'NOT_HIRED',
+  COMPLETED = 'COMPLETED',
+  CLOSED = 'CLOSED',
+  CANCELLED = 'CANCELLED',
+}
+
+export enum Urgency {
+  LOW = 'LOW',
+  MEDIUM = 'MEDIUM',
+  HIGH = 'HIGH',
+  CRITICAL = 'CRITICAL',
+}
+
+// â”€â”€â”€ Planning â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+export enum PlanStatus {
+  DRAFT = 'DRAFT',
+  PENDING_APPROVAL = 'PENDING_APPROVAL',
+  APPROVED = 'APPROVED',
+  REJECTED = 'REJECTED',
+  COMPLETED = 'COMPLETED',
+}
+
+export enum TaskType {
+  JOB_POSTING = 'JOB_POSTING',
+  CV_COLLECTION = 'CV_COLLECTION',
+  CV_SCREENING = 'CV_SCREENING',
+  INTERVIEW_COORDINATION = 'INTERVIEW_COORDINATION',
+  HIRING = 'HIRING',
+}
+
+export enum TaskStatus {
+  PENDING = 'PENDING',
+  IN_PROGRESS = 'IN_PROGRESS',
+  COMPLETED = 'COMPLETED',
+}
+
+// â”€â”€â”€ Interview â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+export enum InterviewStatus {
+  SCHEDULED = 'SCHEDULED',
+  COMPLETED = 'COMPLETED',
+  CANCELLED = 'CANCELLED',
+  RESCHEDULED = 'RESCHEDULED',
+}
+
+export enum InterviewResult {
+  PASS = 'PASS',
+  FAIL = 'FAIL',
+}
+
+export enum HiringDecision {
+  HIRE = 'HIRE',
+  REJECT = 'REJECT',
+}
+
+export enum OfferStatus {
+  DRAFT = 'DRAFT',
+  SENT = 'SENT',
+  ACCEPTED = 'ACCEPTED',
+  DECLINED = 'DECLINED',
+}
+
+export enum OfferResponse {
+  ACCEPT = 'ACCEPT',
+  DECLINE = 'DECLINE',
+}
+// â”€â”€â”€ Job Posting â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+export enum JobVisibility {
+  PUBLIC = 'PUBLIC',
+  PRIVATE = 'PRIVATE',
+}
+
+export enum JobPostingStatus {
+  DRAFT = 'DRAFT',
+  PUBLISHED = 'PUBLISHED',
+  CLOSED = 'CLOSED',
+}
+
+// â”€â”€â”€ Notifications & Communication â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+export enum NotificationType {
+  REQUEST_UPDATE = 'REQUEST_UPDATE',
+  INTERVIEW_INVITE = 'INTERVIEW_INVITE',
+  OFFER = 'OFFER',
+  REJECTION = 'REJECTION',
+  PLAN_UPDATE = 'PLAN_UPDATE',
+  TASK_REMINDER = 'TASK_REMINDER',
+  SYSTEM = 'SYSTEM',
+}
+
+export enum EmailTemplateType {
+  INTERVIEW_INVITATION = 'INTERVIEW_INVITATION',
+  OFFER_LETTER = 'OFFER_LETTER',
+  REJECTION = 'REJECTION',
+  TASK_DEADLINE_REMINDER = 'TASK_DEADLINE_REMINDER',
+}
+
+// â”€â”€â”€ Document Processing (BullMQ) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+export enum DocumentState {
+  PENDING = 'PENDING',
+  PROCESSING = 'PROCESSING',
+  PARSED = 'PARSED',
+  FAILED = 'FAILED',
+}
+
+export enum EmailStatus {
+  PENDING = 'PENDING',
+  SENT = 'SENT',
+  FAILED = 'FAILED',
+}
+
+// â”€â”€â”€ Audit Logging (T-107, NFR-3) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+export enum AuditEntityType {
+  PLAN = 'PLAN',
+  TASK_PLAN = 'TASK_PLAN',
+  INTERVIEW_SCHEDULE = 'INTERVIEW_SCHEDULE',
+  INTERVIEW_RESULT = 'INTERVIEW_RESULT',
+  CV = 'CV',
+  CV_EMBEDDING = 'CV_EMBEDDING',
+}
+
+export enum AuditAction {
+  PLAN_CREATED = 'PLAN_CREATED',
+  PLAN_APPROVED = 'PLAN_APPROVED',
+  PLAN_REJECTED = 'PLAN_REJECTED',
+  PLAN_RESUBMITTED = 'PLAN_RESUBMITTED',
+  TASK_PLAN_ASSIGNED = 'TASK_PLAN_ASSIGNED',
+  TASK_PLAN_STATUS_CHANGED = 'TASK_PLAN_STATUS_CHANGED',
+  INTERVIEW_SCHEDULED = 'INTERVIEW_SCHEDULED',
+  INTERVIEW_RESCHEDULED = 'INTERVIEW_RESCHEDULED',
+  INTERVIEW_CANCELLED = 'INTERVIEW_CANCELLED',
+  INTERVIEW_RESULT_RECORDED = 'INTERVIEW_RESULT_RECORDED',
+  CV_UPLOADED = 'CV_UPLOADED',
+  CV_PARSE_STARTED = 'CV_PARSE_STARTED',
+  CV_PARSE_COMPLETED = 'CV_PARSE_COMPLETED',
+  CV_PARSE_FAILED = 'CV_PARSE_FAILED',
+  CV_EMBEDDING_GENERATED = 'CV_EMBEDDING_GENERATED',
+  CV_SCREENING_STATUS_CHANGED = 'CV_SCREENING_STATUS_CHANGED',
+}

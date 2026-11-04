@@ -1,0 +1,32 @@
+{
+  "name": "@wr/worker",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "tsc --build",
+    "predev": "npm --workspace=@wr/ai run build",
+    "dev": "node --watch --watch-path=src --watch-path=../../packages/ai/dist -r ts-node/register src/main.ts",
+    "start": "node dist/main.js",
+    "clean": "rm -rf dist .turbo",
+    "typecheck": "tsc --noEmit",
+    "lint": "echo 'lint ok'"
+  },
+  "dependencies": {
+    "bullmq": "^5.52.0",
+    "ioredis": "^5.6.1",
+    "nodemailer": "^8.0.8",
+    "@wr/contracts": "*",
+    "@wr/config": "*",
+    "@wr/database": "*",
+    "@wr/queue": "*",
+    "@wr/ai": "*",
+    "@wr/logger": "*"
+  },
+  "devDependencies": {
+    "@types/nodemailer": "^8.0.0",
+    "@wr/typescript-config": "*",
+    "@types/node": "^22.15.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  }
+}
