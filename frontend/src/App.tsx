@@ -38,7 +38,6 @@ import { HRCampaigns } from './features/hr/pages/HRCampaigns';
 import { HRCampaignDetail } from './features/hr/pages/HRCampaignDetail';
 import { HRJobPostingWorkspace } from './features/hr/pages/HRJobPostingWorkspace';
 import { TaskPlanner } from './features/hr/pages/HRTaskPlanner';
-import { HRTalentPool } from './features/hr/pages/HRTalentPool';
 import { CandidateSearch } from './features/hr/pages/CandidateSearch';
 import { HRInterviewSchedule } from './features/hr/pages/HRInterviewSchedule';
 import { HRInterviewDetail } from './features/hr/pages/HRInterviewDetail';
@@ -387,13 +386,7 @@ export function App() {
           />
           <Route
             path="/hr/candidates"
-            element={
-              <ProtectedRoute allowedRoles={[UserRole.HR_LEADER]}>
-                <Layout>
-                  <HRTalentPool />
-                </Layout>
-              </ProtectedRoute>
-            }
+            element={<Navigate to="/hr/search" replace />}
           />
           <Route
             path="/hr/search"

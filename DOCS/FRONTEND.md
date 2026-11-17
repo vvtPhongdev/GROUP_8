@@ -29,10 +29,13 @@ frontend/
 │   ├── context/                # React Context (AuthContext quản lý token, role, user state)
 │   │   └── AuthContext.tsx
 │   │
-│   ├── features/               # Các module phân theo 4 Vai trò (Roles)
-│   │   ├── admin/              # Module dành cho System Admin
+│   ├── features/               # Các module phân theo 5 Vai trò (Roles)
+│   │   ├── boss/               # Module dành cho Ban Giám Đốc (Boss / Executive Portal)
 │   │   │   ├── components/
-│   │   │   └── pages/          # Admin Dashboard, Users, Approval Queue, Reports, Settings
+│   │   │   └── pages/          # BossDashboard, BossApprovalQueue, BossAllRequests, BossAnnualReport, BossDeptStats, BossSettings
+│   │   ├── admin/              # Module dành cho Web Administrator (Quản trị hệ thống)
+│   │   │   ├── components/
+│   │   │   └── pages/          # AdminDashboard, AdminUsers, AdminApiMonitor, AdminMaintenance, AdminSettings
 │   │   ├── dept-head/          # Module dành cho Department Head (Trưởng phòng ban)
 │   │   │   ├── components/
 │   │   │   └── pages/          # Tạo đề xuất tuyển dụng, Đánh giá phỏng vấn, Requests

@@ -78,4 +78,9 @@ export class SchedulesController {
   async candidateCancelSchedule(@Payload() payload: { id: string; userId: string; reason: string }) {
     return this.schedulesService.cancelByCandidate(payload);
   }
+
+  @MessagePattern('interview.complete_schedule')
+  async completeSchedule(@Payload() payload: { id: string; userId?: string; role?: string }) {
+    return this.schedulesService.complete(payload);
+  }
 }

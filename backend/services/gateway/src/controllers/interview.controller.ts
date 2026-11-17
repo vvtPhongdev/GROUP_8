@@ -1,4 +1,4 @@
-﻿import { Controller, Get, Post, Patch, Body, Param, Inject } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Body, Param, Inject } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { SERVICE_TOKENS } from '../constants';
@@ -95,6 +95,21 @@ export class InterviewController {
   ) {
     return firstValueFrom(
       this.interviewClient.send('interview.reschedule_schedule', { id, ...body }),
+    );
+  }
+
+  @Patch('schedules/:id/complete')
+  @Roles(UserRole.HR_LEADER, UserRole.ADMIN, UserRole.DEPARTMENT_HEAD)
+  @ApiOperation({
+    summary: 'End meeting early / mark interview as completed so results can be evaluated immediately',
+  })
+  completeSchedule(@Param('id') id: string, @CurrentUser() user: any) {
+    return firstValueFrom(
+      this.interviewClient.send('interview.complete_schedule', {
+        id,
+        userId: user.sub,
+        role: user.role,
+      }),
     );
   }
 

@@ -74,12 +74,12 @@ export class InterviewResultService {
 
     return schedules.map((s) => {
       const endsAt = new Date(s.scheduledAt.getTime() + s.duration * 60_000);
-      const status =
-        s.finalRecommendation || s.status === InterviewStatus.COMPLETED
-          ? 'Recorded'
-          : new Date() < endsAt
-            ? 'Interviewing'
-            : 'Interview Complete';
+      const isCompleted = s.status === InterviewStatus.COMPLETED || new Date() >= endsAt;
+      const status = s.finalRecommendation
+        ? 'Recorded'
+        : isCompleted
+          ? 'Interview Complete'
+          : 'Interviewing';
       const latestInfoRequest = infoRequestLogs.find((log) => {
         if (log.requestId !== s.requestId || !log.metadata || typeof log.metadata !== 'object') {
           return false;
@@ -308,6 +308,9 @@ export class InterviewResultService {
         ? (schedule.request.skillRequirements as Record<string, unknown>)
         : {};
 
+    const endsAt = new Date(schedule.scheduledAt.getTime() + schedule.duration * 60_000);
+    const isCompleted = schedule.status === InterviewStatus.COMPLETED || new Date() >= endsAt;
+
     return {
       id: schedule.id,
       candidate: schedule.candidate.fullName,
@@ -315,9 +318,11 @@ export class InterviewResultService {
       department: schedule.request.department?.name ?? 'Unassigned department',
       time: formattedTime,
       status:
-        schedule.finalRecommendation || schedule.status === InterviewStatus.COMPLETED
+        schedule.finalRecommendation
           ? 'Recorded'
-          : 'Pending Recording',
+          : isCompleted
+            ? 'Interview Complete'
+            : 'Interviewing',
       location: schedule.location,
       interviewers: interviewers.map((u) => ({
         id: u.id,

@@ -190,11 +190,15 @@ export const HRActionButton = ({
   onClick,
   variant = 'primary',
   type = 'button',
+  disabled = false,
+  className,
 }: {
   children: React.ReactNode;
   onClick?: () => void;
   variant?: 'primary' | 'secondary';
   type?: 'button' | 'submit';
+  disabled?: boolean;
+  className?: string;
 }) => (
   <button
     className={cn(
@@ -202,7 +206,10 @@ export const HRActionButton = ({
       variant === 'primary'
         ? 'bg-teal-command text-white hover:bg-primary'
         : 'border border-border-warm bg-clean-surface text-slate-ink hover:border-teal-command hover:text-teal-command',
+      disabled && 'pointer-events-none opacity-50',
+      className,
     )}
+    disabled={disabled}
     onClick={onClick}
     type={type}
   >

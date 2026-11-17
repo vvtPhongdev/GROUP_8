@@ -46,10 +46,15 @@ export class AdminInterviewRequestInfoDto {
   notes!: string;
 }
 
-@ApiTags('Admin Interview Results')
+@ApiTags('Boss & Admin Interview Results')
 @ApiBearerAuth()
-@Roles(UserRole.ADMIN)
-@Controller('admin/interview-results')
+@Roles(UserRole.BOSS, UserRole.ADMIN, UserRole.WEB_ADMIN)
+@Controller([
+  'boss/interview-results',
+  'boss/interview-result',
+  'admin/interview-results',
+  'admin/interview-result',
+])
 export class AdminInterviewResultsController {
   constructor(
     @Inject(SERVICE_TOKENS.INTERVIEW) private readonly interviewClient: ClientProxy,

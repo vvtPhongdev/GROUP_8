@@ -251,10 +251,13 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
     };
 
     void loadNotifications();
+    const handleNotificationRefresh = () => void loadNotifications();
+    window.addEventListener('notification-refresh', handleNotificationRefresh);
     const refreshId = window.setInterval(() => void loadNotifications(), 30_000);
     return () => {
       active = false;
       window.clearInterval(refreshId);
+      window.removeEventListener('notification-refresh', handleNotificationRefresh);
     };
   }, [token, user]);
 

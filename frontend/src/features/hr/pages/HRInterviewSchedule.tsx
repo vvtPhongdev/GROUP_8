@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../../context/AuthContext';
 import { ApiError, apiRequest } from '../../../lib/api';
 import { HRActionButton, HRCard, HRInlineAlert, HRLoadingState, HRPageHeader } from '../components';
@@ -401,7 +401,28 @@ export const HRInterviewSchedule: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [apiError, setApiError] = useState('');
   const [actionMessage, setActionMessage] = useState('');
+  const [endingMeetingId, setEndingMeetingId] = useState<string | null>(null);
   const scheduleFormRef = useRef<HTMLFormElement>(null);
+
+  const handleEndMeetingEarly = async (interviewId: string) => {
+    setEndingMeetingId(interviewId);
+    setApiError('');
+    try {
+      await apiRequest(`/interviews/schedules/${interviewId}/complete`, token, {
+        method: 'PATCH',
+      });
+      setSchedules((prev) =>
+        prev.map((item) => (item.id === interviewId ? { ...item, status: 'COMPLETED' } : item)),
+      );
+      setActionMessage(
+        'Meeting ended successfully! The interview is now marked as Completed and ready for evaluation in Interview Results.',
+      );
+    } catch (err) {
+      setApiError(err instanceof Error ? err.message : 'Unable to complete interview early');
+    } finally {
+      setEndingMeetingId(null);
+    }
+  };
 
   const loadScheduleData = async () => {
     setLoading(true);
@@ -1157,24 +1178,48 @@ export const HRInterviewSchedule: React.FC = () => {
                         </span>
                       </td>
                       <td className="p-4">
-                        <button
-                          className={`text-sm font-semibold transition hover:underline ${
-                            interview.status === 'Rescheduled'
-                              ? 'text-revision'
-                              : 'text-teal-command'
-                          }`}
-                          onClick={(event) => {
-                            event.stopPropagation();
-                            const schedule = schedules.find((item) => item.id === interview.id);
-                            if (schedule) {
-                              selectQueueSchedule(schedule);
-                              scheduleFormRef.current?.scrollIntoView({ behavior: 'smooth' });
-                            }
-                          }}
-                          type="button"
-                        >
-                          {interview.status === 'Rescheduled' ? 'Reschedule now' : 'View schedule'}
-                        </button>
+                        <div className="flex flex-wrap items-center gap-2">
+                          {interview.status !== 'Completed' && (
+                            <button
+                              className="inline-flex items-center gap-1 rounded-md border border-rose-200 bg-rose-50 px-2.5 py-1 text-xs font-semibold text-rose-700 hover:bg-rose-100 hover:border-rose-300 transition active:scale-[0.98] disabled:opacity-50"
+                              disabled={endingMeetingId === interview.id}
+                              onClick={(event) => {
+                                event.stopPropagation();
+                                void handleEndMeetingEarly(interview.id);
+                              }}
+                              type="button"
+                            >
+                              {endingMeetingId === interview.id ? 'Ending...' : 'End Meeting'}
+                            </button>
+                          )}
+                          <button
+                            className={`text-xs font-semibold transition hover:underline ${
+                              interview.status === 'Rescheduled'
+                                ? 'text-revision'
+                                : 'text-teal-command'
+                            }`}
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              const schedule = schedules.find((item) => item.id === interview.id);
+                              if (schedule) {
+                                selectQueueSchedule(schedule);
+                                scheduleFormRef.current?.scrollIntoView({ behavior: 'smooth' });
+                              }
+                            }}
+                            type="button"
+                          >
+                            {interview.status === 'Rescheduled' ? 'Reschedule now' : 'View schedule'}
+                          </button>
+                          {interview.status === 'Completed' && (
+                            <Link
+                              to={`/hr/interview-results?id=${interview.id}`}
+                              className="inline-flex items-center gap-1 text-xs font-bold text-teal-600 hover:text-teal-700 hover:underline"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              Evaluate Candidate →
+                            </Link>
+                          )}
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -1252,6 +1297,31 @@ export const HRInterviewSchedule: React.FC = () => {
                     Action required: choose a new slot and resend the invitation.
                   </p>
                 ) : null}
+                <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-border-warm/60 pt-2.5">
+                  {selectedQueueSchedule.status !== 'COMPLETED' ? (
+                    <button
+                      type="button"
+                      disabled={endingMeetingId === selectedQueueSchedule.id}
+                      onClick={() => void handleEndMeetingEarly(selectedQueueSchedule.id)}
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-rose-300 bg-rose-50 px-3 py-1.5 text-xs font-bold text-rose-700 shadow-sm hover:bg-rose-100 hover:border-rose-400 transition active:scale-[0.98] disabled:opacity-50"
+                    >
+                      {endingMeetingId === selectedQueueSchedule.id ? 'Ending...' : 'End Meeting Early'}
+                    </button>
+                  ) : (
+                    <Link
+                      to={`/hr/interview-results?id=${selectedQueueSchedule.id}`}
+                      className="inline-flex items-center gap-1.5 rounded-lg bg-teal-command px-3 py-1.5 text-xs font-bold text-white shadow-sm hover:bg-teal-700 transition"
+                    >
+                      Evaluate in Results →
+                    </Link>
+                  )}
+                  <Link
+                    to={`/hr/interview-results?id=${selectedQueueSchedule.id}`}
+                    className="text-xs font-semibold text-teal-command hover:underline"
+                  >
+                    View Result Details
+                  </Link>
+                </div>
               </section>
             ) : null}
             <InterviewScheduleCombobox

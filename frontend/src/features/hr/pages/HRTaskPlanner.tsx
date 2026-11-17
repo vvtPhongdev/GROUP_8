@@ -296,7 +296,7 @@ export const TaskPlanner: React.FC = () => {
       case 'JOB_POSTING':
         return `/hr/job-postings/${requestId}`;
       case 'CV_COLLECTION':
-        return `/hr/candidates?requestId=${requestId}&task=CV_COLLECTION`;
+        return `/hr/search?requestId=${requestId}&task=CV_COLLECTION`;
       case 'CV_SCREENING':
         return `/hr/search?requestId=${requestId}&task=CV_SCREENING`;
       case 'INTERVIEW_COORDINATION':

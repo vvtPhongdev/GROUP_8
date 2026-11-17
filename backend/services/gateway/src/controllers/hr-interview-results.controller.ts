@@ -1,4 +1,4 @@
-﻿import { Body, Controller, Get, Inject, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Param, Post } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UserRole } from '@wr/contracts';
@@ -104,6 +104,19 @@ export class HrInterviewResultsController {
         summaryNotes: body.summaryNotes,
         evaluatorId: user.sub,
         actorRole: user.role,
+      }),
+    );
+  }
+
+  @Post(':id/end-meeting')
+  @Roles(UserRole.HR_LEADER)
+  @ApiOperation({ summary: 'End meeting early to allow immediate feedback and scoring' })
+  endMeeting(@Param('id') interviewId: string, @CurrentUser() user: any) {
+    return firstValueFrom(
+      this.interviewClient.send('interview.complete_schedule', {
+        id: interviewId,
+        userId: user.sub,
+        role: user.role,
       }),
     );
   }

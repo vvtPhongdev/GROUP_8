@@ -1,4 +1,4 @@
-import { Controller, Delete, Get, Patch, Post, Param, Inject, Sse, MessageEvent } from '@nestjs/common';
+import { Controller, Delete, Get, Patch, Post, Param, Inject, Sse, MessageEvent, Body } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { SERVICE_TOKENS } from '../constants';
@@ -53,5 +53,24 @@ export class NotificationsController {
   @ApiOperation({ summary: 'Mark all user notifications as read' })
   markAllRead(@CurrentUser('sub') userId: string) {
     return firstValueFrom(this.notificationClient.send('notification.mark_all_read', { userId }));
+  }
+
+  @Post()
+  @ApiOperation({ summary: 'Create user notification' })
+  createNotification(@Body() body: any, @CurrentUser('sub') userId: string) {
+    return firstValueFrom(
+      this.notificationClient.send('notification.create_notification', {
+        ...body,
+        userId: body.userId || userId,
+      }),
+    );
+  }
+
+  @Post('role')
+  @ApiOperation({ summary: 'Broadcast notification to a role' })
+  sendToRole(@Body() body: any) {
+    return firstValueFrom(
+      this.notificationClient.send('notification.send_to_role', body),
+    );
   }
 }

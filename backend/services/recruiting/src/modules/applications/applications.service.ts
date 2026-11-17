@@ -32,7 +32,14 @@ export class ApplicationsService {
         cvDocuments: {
           orderBy: { createdAt: 'desc' as const },
           take: 1,
-          select: { screeningStatus: true },
+          select: {
+            id: true,
+            fileName: true,
+            fileType: true,
+            screeningStatus: true,
+            structuredData: true,
+            parsedAt: true,
+          },
         },
       },
     },

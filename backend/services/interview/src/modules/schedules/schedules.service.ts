@@ -1176,4 +1176,48 @@ export class SchedulesService {
       reason: `Candidate cancelled: ${payload.reason?.trim() || 'No reason provided'}`,
     });
   }
+
+  async complete(payload: { id: string; userId?: string; role?: string }) {
+    const schedule = await this.prisma.interviewSchedule.findUnique({
+      where: { id: payload.id },
+      include: { request: true, candidate: true },
+    });
+
+    if (!schedule) {
+      throw new RpcException({
+        status: HttpStatus.NOT_FOUND,
+        message: `Interview schedule ${payload.id} not found`,
+      });
+    }
+
+    if (schedule.status === InterviewStatus.CANCELLED) {
+      throw new RpcException({
+        status: HttpStatus.CONFLICT,
+        message: 'Cannot complete a cancelled interview',
+      });
+    }
+
+    const updated = await this.prisma.interviewSchedule.update({
+      where: { id: payload.id },
+      data: {
+        status: InterviewStatus.COMPLETED,
+      },
+      include: { candidate: true, request: true },
+    });
+
+    await this.prisma.requestLog.create({
+      data: {
+        requestId: schedule.requestId,
+        action: 'INTERVIEW_MEETING_ENDED',
+        performedById: payload.userId || 'SYSTEM',
+        metadata: {
+          scheduleId: schedule.id,
+          candidateId: schedule.candidateId,
+          endedAt: new Date().toISOString(),
+        },
+      },
+    });
+
+    return updated;
+  }
 }

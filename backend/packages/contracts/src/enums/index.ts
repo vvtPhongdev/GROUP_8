@@ -17,10 +17,13 @@ export enum UserRole {
 }
 
 export const isBossRole = (role: unknown): boolean =>
-  role === UserRole.BOSS || role === 'BOSS' || role === UserRole.ADMIN || role === 'ADMIN';
+  role === UserRole.BOSS || role === 'BOSS';
 
 export const isWebAdminRole = (role: unknown): boolean =>
-  role === UserRole.WEB_ADMIN || role === 'WEB_ADMIN';
+  role === UserRole.WEB_ADMIN ||
+  role === 'WEB_ADMIN' ||
+  role === UserRole.ADMIN ||
+  role === 'ADMIN';
 
 export const HR_ROLES = [UserRole.HR_LEADER] as const;
 

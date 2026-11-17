@@ -1,4 +1,5 @@
-﻿import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { isHrRole, UserRole } from '@wr/contracts';
 import { useAuth } from '../../../context/AuthContext';
 import { apiRequest } from '../../../lib/api';
@@ -176,6 +177,7 @@ const hrInterviewResultsApi = {
   myFeedback: (id: string) => `/hr/interview-results/${id}/my-feedback`,
   evaluationDraft: (id: string) => `/hr/interview-results/${id}/evaluation-draft`,
   finalRecommendation: (id: string) => `/hr/interview-results/${id}/final-recommendation`,
+  endMeeting: (id: string) => `/hr/interview-results/${id}/end-meeting`,
 };
 
 const OFFLINE_EVIDENCE_START = '[OFFLINE_INTERVIEW_EVIDENCE]';
@@ -343,6 +345,8 @@ const emptyOwnFeedback = (
 
 export const HRInterviewResults: React.FC = () => {
   const { token, user } = useAuth();
+  const [searchParams] = useSearchParams();
+  const targetId = searchParams.get('id') || searchParams.get('interviewId');
   const [completedInterviews, setCompletedInterviews] = useState<CompletedInterview[]>([]);
   const [selectedId, setSelectedId] = useState('');
   const [query, setQuery] = useState('');
@@ -358,6 +362,7 @@ export const HRInterviewResults: React.FC = () => {
   const [apiError, setApiError] = useState('');
   const [detailsLoading, setDetailsLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [endingMeeting, setEndingMeeting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState('');
   const [submitError, setSubmitError] = useState('');
   const [canSubmitMyFeedback, setCanSubmitMyFeedback] = useState(false);
@@ -376,7 +381,8 @@ export const HRInterviewResults: React.FC = () => {
         const data = await apiRequest<CompletedInterview[]>(hrInterviewResultsApi.list, token);
         setCompletedInterviews(data);
         if (data.length > 0) {
-          setSelectedId(data[0].id);
+          const matched = targetId ? data.find((item) => item.id === targetId) : null;
+          setSelectedId(matched ? matched.id : data[0].id);
         }
       } catch (loadError) {
         setApiError(
@@ -387,7 +393,39 @@ export const HRInterviewResults: React.FC = () => {
       }
     };
     void loadCompleted();
-  }, [token]);
+  }, [token, targetId]);
+
+  const handleEndMeeting = async (interviewId: string) => {
+    setEndingMeeting(true);
+    setSubmitError('');
+    try {
+      await apiRequest(hrInterviewResultsApi.endMeeting(interviewId), token, { method: 'POST' });
+      setCompletedInterviews((prev) =>
+        prev.map((item) =>
+          item.id === interviewId ? { ...item, status: 'Interview Complete' } : item,
+        ),
+      );
+      // Reload details immediately to refresh state
+      const details = await apiRequest<InterviewDetailsResponse>(
+        hrInterviewResultsApi.details(interviewId),
+        token,
+      );
+      const nextFeedback = details.feedbacks.map(stripMeetingPhotoFromFeedback);
+      setCanSubmitMyFeedback(Boolean(details.canSubmitMyFeedback));
+      setCanSubmitFinalRecommendation(Boolean(details.canSubmitFinalRecommendation));
+      if (details.canSubmitMyFeedback && user && !nextFeedback.some((item) => item.id === user.id)) {
+        nextFeedback.push(
+          details.myFeedback ? stripMeetingPhotoFromFeedback(details.myFeedback) : emptyOwnFeedback(user),
+        );
+      }
+      setFeedback(nextFeedback);
+      setSubmitMessage('Meeting ended successfully! Candidate evaluation is now unlocked.');
+    } catch (err) {
+      setSubmitError(err instanceof Error ? err.message : 'Unable to end meeting early');
+    } finally {
+      setEndingMeeting(false);
+    }
+  };
 
   useEffect(() => {
     if (!selectedId) return;
@@ -725,6 +763,35 @@ export const HRInterviewResults: React.FC = () => {
                 </div>
               </div>
             </div>
+
+            {selectedInterview.status === 'Interviewing' && (
+              <div className="mx-6 mt-6 flex flex-col gap-3 rounded-xl border border-teal-500/30 bg-teal-500/10 p-4 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex items-center gap-3">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-teal-600 text-white shadow-sm">
+                    <svg className="h-5 w-5 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <circle cx="12" cy="12" r="9" strokeWidth="2" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6l4 2" />
+                    </svg>
+                  </span>
+                  <div>
+                    <h4 className="text-sm font-bold text-deep-charcoal">
+                      Meeting In Progress
+                    </h4>
+                    <p className="text-xs text-slate-ink">
+                      The interview has not reached its scheduled duration yet. Click &quot;End Meeting &amp; Evaluate&quot; to finish early and unlock immediate candidate scoring.
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  disabled={endingMeeting}
+                  onClick={() => void handleEndMeeting(selectedInterview.id)}
+                  className="inline-flex shrink-0 items-center justify-center gap-2 rounded-lg bg-teal-600 px-4 py-2 text-xs font-bold text-white shadow-sm transition hover:bg-teal-700 active:scale-[0.98] disabled:opacity-50"
+                >
+                  {endingMeeting ? 'Ending Meeting...' : 'End Meeting & Evaluate'}
+                </button>
+              </div>
+            )}
 
             {detailsLoading && (
               <div className="px-6 pt-6 text-sm text-on-surface-variant">
