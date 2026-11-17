@@ -35,6 +35,7 @@ export class CvController {
       fileType: 'PDF' | 'DOCX' | 'DOC';
       filePath: string;
       rawText?: string;
+      parserPreference?: 'MODEL_VECTOR' | 'GEMINI_API';
     },
   ) {
     return this.service.uploadCv(payload);
@@ -50,6 +51,7 @@ export class CvController {
       fileType: 'PDF' | 'DOCX' | 'DOC';
       filePath: string;
       rawText?: string;
+      parserPreference?: 'MODEL_VECTOR' | 'GEMINI_API';
     },
   ) {
     return this.service.replaceCvForCandidate(payload);

@@ -209,6 +209,7 @@ export class CvController {
     });
     const [uploaded, rawText] = await Promise.all([uploadedPromise, rawTextPromise]);
 
+    const effectiveParserPreference = parserPreference || 'GEMINI_API';
     try {
       return await firstValueFrom(
         this.cvClient.send('cv.upload_candidate', {
@@ -217,7 +218,7 @@ export class CvController {
           fileType,
           filePath: uploaded.publicUrl,
           rawText,
-          parserPreference,
+          parserPreference: effectiveParserPreference,
         }),
       );
     } catch (error) {
@@ -275,6 +276,7 @@ export class CvController {
     });
     const [uploaded, rawText] = await Promise.all([uploadedPromise, rawTextPromise]);
 
+    const effectiveParserPreference = parserPreference || 'GEMINI_API';
     try {
       return await firstValueFrom(
         this.cvClient.send('cv.replace_for_candidate', {
@@ -284,7 +286,7 @@ export class CvController {
           fileType,
           filePath: uploaded.publicUrl,
           rawText,
-          parserPreference,
+          parserPreference: effectiveParserPreference,
         }),
       );
     } catch (error) {

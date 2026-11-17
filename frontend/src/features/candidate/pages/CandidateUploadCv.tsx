@@ -119,12 +119,12 @@ interface CvDocument {
 
 const getParsingSource = (method?: string | null) => {
   if (method === 'AI_VISION') {
-    return { label: 'Gemini API parsing', detail: 'Gemini Vision OCR + extraction', tone: 'text-blue-700' };
+    return { label: 'Gemini AI parsing', detail: 'Gemini Vision OCR & Deep Extraction', tone: 'text-blue-700' };
   }
   if (method === 'AI_TEXT') {
-    return { label: 'Gemini API parsing', detail: 'Gemini text extraction', tone: 'text-blue-700' };
+    return { label: 'Gemini AI parsing', detail: 'Gemini AI Deep Text Extraction', tone: 'text-blue-700' };
   }
-  return { label: 'Model parsing', detail: 'Local template/text parser', tone: 'text-teal-command' };
+  return { label: 'Template parsing', detail: 'RMS Standard Template Parser', tone: 'text-teal-command' };
 };
 
 interface CvExperience {
@@ -754,10 +754,10 @@ const uniqueItems = (items: Array<string | undefined>) =>
   [...new Set(items.map((item) => item?.trim()).filter((item): item is string => Boolean(item)))];
 
 const createParsedCvPreview = (document: CvDocument): ParsedCvPreview => {
-  // Preview only values parsed from this CV's extracted text. Stored AI/profile drafts can
-  // belong to a previously uploaded document and must not appear as this CV's result.
+  // Preview only values parsed from this CV's extracted text.
   const fallback = parseRawText(document.rawText || '');
-  const aiResume = {} as ResumeDraftData;
+  const aiResumeResult = ResumeDraftSchema.safeParse(document.structuredData?.resume);
+  const aiResume = aiResumeResult.success ? aiResumeResult.data : undefined;
   const personalInfo = aiResume?.personalInfo;
   const aiSkills = aiResume?.skills;
   const readLink = (type: 'LINKEDIN' | 'GITHUB' | 'PORTFOLIO') =>
@@ -893,7 +893,6 @@ export const CandidateUploadCv: React.FC = () => {
 
   // Drag and Drop Visual State
   const [isDragActive, setIsDragActive] = useState(false);
-  const [parserPreference, setParserPreference] = useState<'MODEL_VECTOR' | 'GEMINI_API'>('MODEL_VECTOR');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const updateFileInputRef = useRef<HTMLInputElement>(null);
   const [loading, setLoading] = useState(true);
@@ -1235,7 +1234,7 @@ export const CandidateUploadCv: React.FC = () => {
     });
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('parserPreference', parserPreference);
+    formData.append('parserPreference', 'GEMINI_API');
     try {
       const uploaded = await apiRequest<{
         id: string;
@@ -1320,7 +1319,7 @@ export const CandidateUploadCv: React.FC = () => {
     });
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('parserPreference', parserPreference);
+    formData.append('parserPreference', 'GEMINI_API');
 
     try {
       const updated = await apiRequest<{
@@ -2046,10 +2045,6 @@ export const CandidateUploadCv: React.FC = () => {
               Support for PDF, DOCX, and DOC files. Max file size: 10MB. Ensure your contact details
               and work history are clearly legible for best parsing results.
             </p>
-            <div className="mb-5 grid w-full max-w-md grid-cols-2 gap-2 rounded-lg bg-surface-container-low p-1" onClick={(e) => e.stopPropagation()}>
-              <button type="button" onClick={() => { alert('⚠️ Tính năng Phân tích AI hiện đang bị lỗi / bảo trì và tạm thời không sử dụng được! Hệ thống sẽ bóc tách văn bản tiêu chuẩn.'); setParserPreference('MODEL_VECTOR'); }} className={`rounded-md px-3 py-2 text-xs font-bold ${parserPreference === 'MODEL_VECTOR' ? 'bg-white text-teal-command shadow-sm' : 'text-slate-ink'}`}>Model AI Vector</button>
-              <button type="button" onClick={() => { alert('⚠️ Tính năng Gemini AI hiện đang bị lỗi / bảo trì và tạm thời không sử dụng được! Hệ thống sẽ bóc tách văn bản tiêu chuẩn.'); setParserPreference('GEMINI_API'); }} className={`rounded-md px-3 py-2 text-xs font-bold ${parserPreference === 'GEMINI_API' ? 'bg-white text-blue-700 shadow-sm' : 'text-slate-ink'}`}>Gemini API</button>
-            </div>
             <div className="flex gap-3" onClick={(e) => e.stopPropagation()}>
               <button
                 disabled={uploading || updatingCvId !== null}
@@ -2346,11 +2341,11 @@ export const CandidateUploadCv: React.FC = () => {
               </div>
               {(() => {
                 const preview = createParsedCvPreview(successParsedCv);
-                const renderSkillVector = (skills: string[], tone: string, emptyText: string) => (
+                const renderSkillBadges = (skills: string[], tone: string, emptyText: string) => (
                   <div className="flex flex-wrap gap-2">
                     {skills.length ? skills.map((skill) => (
                       <span key={skill} className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs font-bold ${tone}`}>
-                        <span className="font-mono text-[10px] opacity-70">[ ]</span>{skill}
+                        <span className="font-mono text-[10px] opacity-70">[✓]</span>{skill}
                       </span>
                     )) : <span className="text-xs italic text-slate-ink">{emptyText}</span>}
                   </div>
@@ -2382,13 +2377,13 @@ export const CandidateUploadCv: React.FC = () => {
 
                     <section className="rounded-xl border border-teal-command/20 bg-teal-command/[0.03] p-4">
                       <div className="flex flex-wrap items-baseline justify-between gap-1">
-                        <p className="text-[10px] font-bold uppercase tracking-wider text-teal-command">Skill vectors</p>
-                        <p className="text-[10px] text-slate-ink">Each extracted skill is kept as an individual item for profile import.</p>
+                        <p className="text-[10px] font-bold uppercase tracking-wider text-teal-command">Skills & Expertise</p>
+                        <p className="text-[10px] text-slate-ink">Extracted skills automatically categorized for your profile.</p>
                       </div>
                       <div className="mt-3 space-y-3">
-                        <div><p className="mb-1.5 text-xs font-bold text-deep-charcoal">Technical skills</p>{renderSkillVector(preview.technicalSkills, 'border-teal-command/20 bg-white text-teal-command', 'No technical skills found.')}</div>
-                        <div><p className="mb-1.5 text-xs font-bold text-deep-charcoal">Soft skills</p>{renderSkillVector(preview.softSkills, 'border-violet-200 bg-violet-50 text-violet-700', 'No soft skills found.')}</div>
-                        <div><p className="mb-1.5 text-xs font-bold text-deep-charcoal">Languages</p>{renderSkillVector(preview.languages, 'border-amber-200 bg-amber-50 text-amber-800', 'No languages found.')}</div>
+                        <div><p className="mb-1.5 text-xs font-bold text-deep-charcoal">Technical skills</p>{renderSkillBadges(preview.technicalSkills, 'border-teal-command/20 bg-white text-teal-command', 'No technical skills found.')}</div>
+                        <div><p className="mb-1.5 text-xs font-bold text-deep-charcoal">Soft skills</p>{renderSkillBadges(preview.softSkills, 'border-violet-200 bg-violet-50 text-violet-700', 'No soft skills found.')}</div>
+                        <div><p className="mb-1.5 text-xs font-bold text-deep-charcoal">Languages</p>{renderSkillBadges(preview.languages, 'border-amber-200 bg-amber-50 text-amber-800', 'No languages found.')}</div>
                       </div>
                     </section>
 
@@ -2402,11 +2397,11 @@ export const CandidateUploadCv: React.FC = () => {
               {successParsedCv.processingMethod === 'AI_TEXT' ||
               successParsedCv.processingMethod === 'AI_VISION' ? (
                 <div className="rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 text-xs font-semibold text-blue-900">
-                  Parsing source: Gemini API ({getParsingSource(successParsedCv.processingMethod).detail}).
+                  Parsing source: Gemini AI ({getParsingSource(successParsedCv.processingMethod).detail}).
                 </div>
               ) : (
                 <div className="rounded-lg border border-teal-command/20 bg-teal-command/10 px-3 py-2 text-xs font-semibold text-teal-command">
-                  Parsing source: Model parsing ({getParsingSource(successParsedCv.processingMethod).detail}).
+                  Parsing source: {getParsingSource(successParsedCv.processingMethod).label} ({getParsingSource(successParsedCv.processingMethod).detail}).
                 </div>
               )}
               <CvAiReviewNotice />

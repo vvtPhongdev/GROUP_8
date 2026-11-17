@@ -91,58 +91,70 @@ export async function processCvParseJob(
     }
 
     const hasReliableLocalText = localText.replace(/\s/g, '').length >= 200;
-    let algorithmicExtraction = null;
+    let extraction = null;
+    let templateMatched = false;
+
+    // 1. Check if the CV matches the official RMS candidate template
     if (localText && payload.parserPreference !== 'GEMINI_API') {
       try {
-        // 1. Try official RMS template parser first
         const templateResult = await parseCandidateTemplateCv({ fileType, rawText: localText });
         if (templateResult.matched) {
-          algorithmicExtraction = templateResult.extraction;
+          extraction = templateResult.extraction;
+          templateMatched = true;
           logger.log(
             `CV ${cvDocumentId} matched RMS official template. Parsed algorithmically with 0 AI token cost.`,
           );
-        } else {
-          // 2. Try generic algorithmic heuristic parser (Regex + Skill Dictionary)
-          const genericResult = parseGenericCvWithAlgorithm({
-            rawText: localText,
-            fileName: cvRecord.fileName,
-          });
-          if (genericResult.matched) {
-            algorithmicExtraction = genericResult.extraction;
-            logger.log(
-              `CV ${cvDocumentId} parsed via generic algorithmic rules. 0 AI token cost.`,
-            );
-          } else {
-            logger.log(
-              `CV ${cvDocumentId} algorithmic parse incomplete (${genericResult.reason}). Falling back to Gemini AI.`,
-            );
-          }
         }
       } catch (parserError) {
         logger.warn(
-          `Algorithmic parser failed for ${cvDocumentId}; fallback to Gemini: ${
+          `Official template parser failed for ${cvDocumentId}: ${
             parserError instanceof Error ? parserError.message : String(parserError)
           }`,
         );
       }
     }
 
-    const extraction =
-      algorithmicExtraction ??
-      (payload.parserPreference !== 'MODEL_VECTOR' && aiConfigured
-        ? await extractCvWithAi({
-            fileName: cvRecord.fileName,
-            fileType,
-            fileUrl: filePath,
-            rawText: localText,
-          })
-        : null);
+    // 2. If not official template and AI is configured, use Gemini AI for accurate extraction
+    if (!extraction && aiConfigured) {
+      try {
+        extraction = await extractCvWithAi({
+          fileName: cvRecord.fileName,
+          fileType,
+          fileUrl: filePath,
+          rawText: localText,
+        });
+        logger.log(`CV ${cvDocumentId} accurately extracted using Gemini AI.`);
+      } catch (aiError) {
+        logger.warn(
+          `Gemini AI extraction failed for ${cvDocumentId}; attempting heuristic fallback: ${
+            aiError instanceof Error ? aiError.message : String(aiError)
+          }`,
+        );
+      }
+    }
+
+    // 3. Fallback to generic heuristic parser if AI extraction was unavailable or failed
+    if (!extraction && localText) {
+      try {
+        const genericResult = parseGenericCvWithAlgorithm({
+          rawText: localText,
+          fileName: cvRecord.fileName,
+        });
+        if (genericResult.matched) {
+          extraction = genericResult.extraction;
+          logger.log(`CV ${cvDocumentId} parsed via generic heuristic rules.`);
+        }
+      } catch (parserError) {
+        logger.warn(
+          `Generic heuristic parser failed for ${cvDocumentId}: ${
+            parserError instanceof Error ? parserError.message : String(parserError)
+          }`,
+        );
+      }
+    }
 
     const hasUsableModelText = localText.trim().length > 0;
-    if (
-      !extraction &&
-      !(payload.parserPreference === 'MODEL_VECTOR' ? hasUsableModelText : hasReliableLocalText)
-    ) {
+    if (!extraction && !hasUsableModelText && !hasReliableLocalText) {
       throw new Error(
         'No readable text was found. Configure GEMINI_API_KEY or GEMINI_API_KEYS to OCR scanned or image-based CV files.',
       );
@@ -159,7 +171,7 @@ export async function processCvParseJob(
           warnings: extraction.warnings,
           method,
           model: extraction.model ?? null,
-          templateMatched: Boolean(algorithmicExtraction),
+          templateMatched,
           parserPreference: payload.parserPreference ?? 'AUTO',
         } as Prisma.InputJsonValue)
       : Prisma.JsonNull;
