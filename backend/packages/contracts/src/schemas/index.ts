@@ -347,6 +347,29 @@ export const CvExtractionSchema = z.object({
   model: z.string().optional(),
 });
 
+export const CvEvaluationSchema = z.object({
+  overallScore: z.number().min(0).max(100),
+  skillsScore: z.number().min(0).max(100),
+  experienceScore: z.number().min(0).max(100),
+  educationScore: z.number().min(0).max(100),
+  matchSummary: z.string(),
+  matchedSkills: z.array(z.string()),
+  missingSkills: z.array(z.string()),
+  strengths: z.array(z.string()),
+  weaknesses: z.array(z.string()),
+  recommendation: z.enum(['SHORTLISTED', 'CONSIDER', 'REJECTED']),
+  recommendationReason: z.string(),
+  evaluatedAt: z.string().optional(),
+  model: z.string().optional(),
+});
+
+export const EvaluateCvRequestSchema = z.object({
+  cvDocumentId: z.string().uuid(),
+  requestId: z.string().uuid(),
+  autoUpdateStatus: z.boolean().optional(),
+  actorUserId: z.string().optional(),
+});
+
 export type CreateCandidateProfileInput = z.infer<typeof CreateCandidateProfileSchema>;
 export type UpdateCandidateProfileInput = z.infer<typeof UpdateCandidateProfileSchema>;
 export type CreateCandidateCVInput = z.infer<typeof CreateCandidateCVSchema>;
@@ -354,6 +377,8 @@ export type UpdateCandidateCVInput = z.infer<typeof UpdateCandidateCVSchema>;
 export type ResumeDraftData = z.infer<typeof ResumeDraftSchema>;
 export type ResumeData = z.infer<typeof ResumeSchema>;
 export type CvExtractionData = z.infer<typeof CvExtractionSchema>;
+export type CvEvaluationData = z.infer<typeof CvEvaluationSchema>;
+export type EvaluateCvRequest = z.infer<typeof EvaluateCvRequestSchema>;
 
 // ─── Interview Schemas ─────────────────────────────────────────────
 

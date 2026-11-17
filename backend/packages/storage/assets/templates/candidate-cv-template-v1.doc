@@ -1,0 +1,90 @@
+<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+<head>
+<meta charset="utf-8">
+<title>RMS Candidate CV Template</title>
+<style>
+body { font-family: Calibri, Arial, sans-serif; font-size: 11pt; line-height: 1.5; color: #2D3748; margin: 40px; }
+h1 { font-size: 20pt; color: #1A365D; margin-bottom: 4px; text-transform: uppercase; }
+h2 { font-size: 13pt; color: #2B6CB0; border-bottom: 2px solid #CBD5E0; padding-bottom: 4px; margin-top: 20px; margin-bottom: 10px; text-transform: uppercase; }
+.meta { font-size: 10pt; color: #718096; margin-bottom: 15px; }
+.contact-table { width: 100%; margin-bottom: 15px; border-collapse: collapse; }
+.contact-table td { padding: 3px 0; font-size: 10.5pt; }
+.section-item { margin-bottom: 12px; }
+.item-header { font-weight: bold; color: #2D3748; }
+.item-sub { font-style: italic; color: #4A5568; }
+ul { margin-top: 4px; margin-bottom: 8px; padding-left: 20px; }
+li { margin-bottom: 3px; }
+.marker { font-size: 8pt; color: #A0AEC0; margin-bottom: 10px; }
+</style>
+</head>
+<body>
+<div class="marker">RMS-CV-TEMPLATE: V1</div>
+<div class="meta">RMS Candidate CV Template version 1</div>
+
+<h1>[HỌ VÀ TÊN / FULL NAME]</h1>
+<div style="font-size: 13pt; font-weight: bold; color: #4A5568; margin-bottom: 15px;">[VỊ TRÍ ỨNG TUYỂN / CURRENT ROLE (VD: Senior Fullstack Engineer)]</div>
+
+<table class="contact-table">
+  <tr>
+    <td width="50%"><strong>Email:</strong> [your.email@example.com]</td>
+    <td width="50%"><strong>Phone:</strong> [0912345678]</td>
+  </tr>
+  <tr>
+    <td><strong>Address:</strong> [Hà Nội / TP. Hồ Chí Minh, Việt Nam]</td>
+    <td><strong>LinkedIn:</strong> [https://linkedin.com/in/yourprofile]</td>
+  </tr>
+  <tr>
+    <td><strong>GitHub:</strong> [https://github.com/yourusername]</td>
+    <td><strong>Portfolio:</strong> [https://yourportfolio.dev]</td>
+  </tr>
+</table>
+
+<h2>Professional Summary</h2>
+<p>[Tóm tắt tổng quan 2-4 câu về số năm kinh nghiệm, thế mạnh công nghệ cốt lõi và mục tiêu nghề nghiệp. Ví dụ: Kỹ sư phần mềm với hơn 4 năm kinh nghiệm thiết kế và phát triển hệ thống microservices sử dụng Node.js, React, TypeScript và cơ sở dữ liệu phân tán. Có khả năng tối ưu hiệu năng cao và giải quyết vấn đề phức tạp.]</p>
+
+<h2>Technical Skills</h2>
+<p><strong>Programming languages:</strong> [JavaScript, TypeScript, Python, Java, SQL, Go]</p>
+<p><strong>Frameworks and libraries:</strong> [React, Next.js, Node.js, Express, NestJS, TailwindCSS, Spring Boot]</p>
+<p><strong>Databases and tools:</strong> [PostgreSQL, MongoDB, Redis, Docker, Kubernetes, AWS, Git, CI/CD]</p>
+
+<h2>Soft Skills</h2>
+<p>[Làm việc nhóm, Tư duy giải quyết vấn đề, Quản lý thời gian, Giao tiếp hiệu quả, Khả năng tự học công nghệ mới]</p>
+
+<h2>Languages</h2>
+<p>Tiếng Việt - Bản ngữ</p>
+<p>Tiếng Anh - Thành thạo (IELTS 7.0 / Giao tiếp chuyên nghiệp)</p>
+
+<h2>Work Experience</h2>
+
+<div class="section-item">
+  <div class="item-header">Company: [Tên Công ty A (VD: Tập đoàn Công nghệ FPT)]</div>
+  <div class="item-sub">Position: [Senior Backend Engineer] | Duration: [03/2022 - Hiện tại]</div>
+  <p><strong>Achievements:</strong></p>
+  <ul>
+    <li>Thiết kế và triển khai kiến trúc microservices xử lý hơn 100,000 yêu cầu/phút với độ trễ dưới 50ms.</li>
+    <li>Tối ưu hóa truy vấn cơ sở dữ liệu PostgreSQL và áp dụng Redis cache giúp giảm 40% tải server.</li>
+    <li>Hướng dẫn và kèm cặp 3 kỹ sư cấp dưới về chuẩn code TypeScript và viết kiểm thử tự động.</li>
+  </ul>
+</div>
+
+<div class="section-item">
+  <div class="item-header">Company: [Tên Công ty B (VD: Công ty Cổ phần VNG)]</div>
+  <div class="item-sub">Position: [Fullstack Developer] | Duration: [06/2020 - 02/2022]</div>
+  <p><strong>Achievements:</strong></p>
+  <ul>
+    <li>Xây dựng các module thanh toán và xác thực người dùng sử dụng React, Node.js và RabbitMQ.</li>
+    <li>Tham gia xây dựng pipeline CI/CD với GitLab CI và Docker, rút ngắn thời gian triển khai sản phẩm 30%.</li>
+  </ul>
+</div>
+
+<h2>Education</h2>
+
+<div class="section-item">
+  <div class="item-header">School: [Trường Đại học Bách Khoa / Đại học FPT / Đại học Quốc Gia]</div>
+  <div class="item-sub">Degree: [Cử nhân / Kỹ sư] | Major: [Khoa học Máy tính / Công nghệ Thông tin]</div>
+  <div>Duration: [2016 - 2020] | GPA: [3.4 / 4.0]</div>
+</div>
+
+</body>
+</html>
+

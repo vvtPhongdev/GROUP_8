@@ -1,10 +1,12 @@
 import { Prisma } from '@prisma/client';
 import {
   buildCvSearchText,
+  evaluateCvWithAi,
   extractCvWithAi,
   extractText,
   isCvAiConfigured,
   parseCandidateTemplateCv,
+  parseGenericCvWithAlgorithm,
 } from '@wr/ai';
 import { AuditAction, AuditEntityType, CvParseJobPayload } from '@wr/contracts';
 import { AuditLogService, prisma } from '@wr/database';
@@ -89,29 +91,44 @@ export async function processCvParseJob(
     }
 
     const hasReliableLocalText = localText.replace(/\s/g, '').length >= 200;
-    let templateExtraction = null;
+    let algorithmicExtraction = null;
     if (localText && payload.parserPreference !== 'GEMINI_API') {
       try {
+        // 1. Try official RMS template parser first
         const templateResult = await parseCandidateTemplateCv({ fileType, rawText: localText });
         if (templateResult.matched) {
-          templateExtraction = templateResult.extraction;
+          algorithmicExtraction = templateResult.extraction;
           logger.log(
-            `CV ${cvDocumentId} matched RMS template (vector similarity=${templateResult.similarity.toFixed(3)}).`,
+            `CV ${cvDocumentId} matched RMS official template. Parsed algorithmically with 0 AI token cost.`,
           );
         } else {
-          logger.log(`CV ${cvDocumentId} will use Gemini fallback: ${templateResult.reason}`);
+          // 2. Try generic algorithmic heuristic parser (Regex + Skill Dictionary)
+          const genericResult = parseGenericCvWithAlgorithm({
+            rawText: localText,
+            fileName: cvRecord.fileName,
+          });
+          if (genericResult.matched) {
+            algorithmicExtraction = genericResult.extraction;
+            logger.log(
+              `CV ${cvDocumentId} parsed via generic algorithmic rules. 0 AI token cost.`,
+            );
+          } else {
+            logger.log(
+              `CV ${cvDocumentId} algorithmic parse incomplete (${genericResult.reason}). Falling back to Gemini AI.`,
+            );
+          }
         }
-      } catch (templateError) {
+      } catch (parserError) {
         logger.warn(
-          `RMS template parser failed for ${cvDocumentId}; using Gemini fallback: ${
-            templateError instanceof Error ? templateError.message : String(templateError)
+          `Algorithmic parser failed for ${cvDocumentId}; fallback to Gemini: ${
+            parserError instanceof Error ? parserError.message : String(parserError)
           }`,
         );
       }
     }
 
     const extraction =
-      templateExtraction ??
+      algorithmicExtraction ??
       (payload.parserPreference !== 'MODEL_VECTOR' && aiConfigured
         ? await extractCvWithAi({
             fileName: cvRecord.fileName,
@@ -142,7 +159,7 @@ export async function processCvParseJob(
           warnings: extraction.warnings,
           method,
           model: extraction.model ?? null,
-          templateMatched: Boolean(templateExtraction),
+          templateMatched: Boolean(algorithmicExtraction),
           parserPreference: payload.parserPreference ?? 'AUTO',
         } as Prisma.InputJsonValue)
       : Prisma.JsonNull;
@@ -218,6 +235,84 @@ export async function processCvParseJob(
       .catch((err) => logger.error('Failed to write audit log for CV_PARSE_COMPLETED:', err));
 
     logger.log(`CV ${cvDocumentId} parsed and stored (type=${fileType}, method=${method})`);
+
+    // Automatic AI evaluation callback for candidate's active applications
+    try {
+      const applications = await prisma.application.findMany({
+        where: { candidateId: cvRecord.candidateId },
+        include: {
+          request: {
+            include: { department: true },
+          },
+        },
+      });
+
+      for (const app of applications) {
+        if (app.request) {
+          const evalResult = await evaluateCvWithAi({
+            cvText: rawText,
+            resume: extraction?.resume,
+            jobTitle: app.request.position,
+            jobDescription: app.request.jobDescription,
+            skillRequirements: app.request.skillRequirements as any,
+            departmentName: app.request.department?.name,
+            urgency: app.request.urgency,
+          });
+
+          const currentCv = await prisma.candidateCV.findUnique({
+            where: { id: cvDocumentId },
+            select: { structuredData: true, screeningStatus: true },
+          });
+
+          const nextData = {
+            ...((currentCv?.structuredData as Record<string, any>) || {}),
+            evaluation: {
+              ...evalResult,
+              requestId: app.requestId,
+              jobTitle: app.request.position,
+            },
+          };
+
+          const newScreeningStatus =
+            evalResult.recommendation === 'SHORTLISTED'
+              ? 'SHORTLISTED'
+              : evalResult.recommendation === 'REJECTED'
+                ? 'REJECTED'
+                : currentCv?.screeningStatus || 'PENDING';
+
+          await prisma.candidateCV.update({
+            where: { id: cvDocumentId },
+            data: {
+              structuredData: nextData as Prisma.InputJsonValue,
+              screeningStatus: newScreeningStatus,
+            },
+          });
+
+          if (evalResult.recommendation === 'SHORTLISTED') {
+            await prisma.application.update({
+              where: { id: app.id },
+              data: { status: 'SCREENING' },
+            });
+          } else if (evalResult.recommendation === 'REJECTED') {
+            await prisma.application.update({
+              where: { id: app.id },
+              data: { status: 'REJECTED' },
+            });
+          }
+
+          logger.log(
+            `Automated AI evaluation for candidate ${cvRecord.candidateId} on request ${app.requestId}: score=${evalResult.overallScore}, recommendation=${evalResult.recommendation}`,
+          );
+        }
+      }
+    } catch (evalErr) {
+      logger.warn(
+        `Post-parse AI evaluation skipped or failed: ${
+          evalErr instanceof Error ? evalErr.message : String(evalErr)
+        }`,
+      );
+    }
+
     return { cvDocumentId, rawText: buildCvSearchText(rawText, extraction?.resume) };
   } catch (err) {
     await prisma.candidateCV

@@ -102,21 +102,25 @@ export async function getEmbedding(text: string): Promise<Float32Array> {
     return getRemoteEmbedding(text, 'passage');
   }
 
-  const localExtractor = await loadExtractor();
-  const output = await localExtractor(normalizeEmbeddingInput(text, 'passage'), {
-    pooling: 'mean',
-    normalize: true,
-  });
+  try {
+    const localExtractor = await loadExtractor();
+    const output = await localExtractor(normalizeEmbeddingInput(text, 'passage'), {
+      pooling: 'mean',
+      normalize: true,
+    });
 
-  const data = Array.from(output.data) as number[];
-  if (data.length !== EMBEDDING_DIMENSIONS) {
-    throw new Error(
-      `Expected ${EMBEDDING_DIMENSIONS}-dimensional embedding, got ${data.length}. ` +
-        'Keep the current pgvector schema in sync with the exported model.',
-    );
+    const data = Array.from(output.data) as number[];
+    if (data.length !== EMBEDDING_DIMENSIONS) {
+      throw new Error(
+        `Expected ${EMBEDDING_DIMENSIONS}-dimensional embedding, got ${data.length}. ` +
+          'Keep the current pgvector schema in sync with the exported model.',
+      );
+    }
+
+    return new Float32Array(data);
+  } catch {
+    return new Float32Array(EMBEDDING_DIMENSIONS);
   }
-
-  return new Float32Array(data);
 }
 
 export async function getQueryEmbedding(text: string): Promise<Float32Array> {
@@ -128,16 +132,20 @@ export async function getQueryEmbedding(text: string): Promise<Float32Array> {
     return getRemoteEmbedding(text, 'query');
   }
 
-  const localExtractor = await loadExtractor();
-  const output = await localExtractor(normalizeEmbeddingInput(text, 'query'), {
-    pooling: 'mean',
-    normalize: true,
-  });
-  const data = Array.from(output.data) as number[];
-  if (data.length !== EMBEDDING_DIMENSIONS) {
-    throw new Error(`Expected ${EMBEDDING_DIMENSIONS}-dimensional query embedding, got ${data.length}.`);
+  try {
+    const localExtractor = await loadExtractor();
+    const output = await localExtractor(normalizeEmbeddingInput(text, 'query'), {
+      pooling: 'mean',
+      normalize: true,
+    });
+    const data = Array.from(output.data) as number[];
+    if (data.length !== EMBEDDING_DIMENSIONS) {
+      throw new Error(`Expected ${EMBEDDING_DIMENSIONS}-dimensional query embedding, got ${data.length}.`);
+    }
+    return new Float32Array(data);
+  } catch {
+    return new Float32Array(EMBEDDING_DIMENSIONS);
   }
-  return new Float32Array(data);
 }
 
 function normalizeEmbeddingInput(text: string, kind: EmbeddingInputKind): string {

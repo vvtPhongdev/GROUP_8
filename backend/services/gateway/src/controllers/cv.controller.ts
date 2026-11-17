@@ -1,4 +1,4 @@
-﻿import {
+import {
   BadRequestException,
   Body,
   Controller,
@@ -35,7 +35,8 @@ import { Public } from '../auth/decorators/public.decorator';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { SERVICE_TOKENS } from '../constants';
 import { Response } from 'express';
-import { basename } from 'path';
+import { basename, resolve } from 'path';
+import { existsSync, readFileSync } from 'fs';
 
 @ApiTags('Candidate CVs')
 @ApiBearerAuth()
@@ -79,12 +80,24 @@ export class CvController {
       res.setHeader('Cache-Control', 'no-store, max-age=0');
       res.setHeader('Content-Disposition', 'attachment; filename="RMS-CV-Template.doc"');
       return res.send(buffer);
-    } catch (error) {
-      this.logger.error(
-        `Unable to download CV template from ${storageBuckets.templates}/${candidateCvTemplateStoragePath}: ${
-          error instanceof Error ? error.message : String(error)
-        }`,
-      );
+    } catch {
+      // Local fallback template asset if storage object is not present
+      const candidatePaths = [
+        resolve(process.cwd(), 'packages/storage/assets/templates/candidate-cv-template-v1.doc'),
+        resolve(process.cwd(), 'backend/packages/storage/assets/templates/candidate-cv-template-v1.doc'),
+        resolve(__dirname, '../../../../packages/storage/assets/templates/candidate-cv-template-v1.doc'),
+        resolve(__dirname, '../../../../../backend/packages/storage/assets/templates/candidate-cv-template-v1.doc'),
+      ];
+      const targetPath = candidatePaths.find((p) => existsSync(p));
+      if (targetPath) {
+        const buffer = readFileSync(targetPath);
+        res.type('application/msword');
+        res.setHeader('Cache-Control', 'no-store, max-age=0');
+        res.setHeader('Content-Disposition', 'attachment; filename="RMS-CV-Template.doc"');
+        return res.send(buffer);
+      }
+
+      this.logger.error(`Unable to find candidate CV template in storage or local assets`);
       throw new NotFoundException('CV template is not available');
     }
   }

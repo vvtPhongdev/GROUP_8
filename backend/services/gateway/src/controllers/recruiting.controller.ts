@@ -1,4 +1,4 @@
-﻿import {
+import {
   BadRequestException,
   Body,
   Controller,
@@ -1006,8 +1006,43 @@ export class RecruitingController {
 
   @Post('evaluations')
   @ApiOperation({ summary: 'Trigger evaluation run' })
-  createEvaluation(@Body() body: any) {
-    return firstValueFrom(this.recruitingClient.send('evaluations.create', body));
+  createEvaluation(@Body() body: any, @CurrentUser() user?: any) {
+    return firstValueFrom(
+      this.recruitingClient.send('evaluations.create', {
+        ...body,
+        actorUserId: user?.sub,
+        actorRole: user?.role,
+      }),
+    );
+  }
+
+  @Post('evaluations/cv')
+  @ApiOperation({ summary: 'Trigger AI CV evaluation against a recruitment request' })
+  evaluateCv(
+    @Body() body: { cvDocumentId: string; requestId: string; autoUpdateStatus?: boolean },
+    @CurrentUser() user?: any,
+  ) {
+    return firstValueFrom(
+      this.recruitingClient.send('evaluations.evaluate_cv', {
+        ...body,
+        actorUserId: user?.sub,
+        actorRole: user?.role,
+      }),
+    );
+  }
+
+  @Get('evaluations/cv/:cvDocumentId')
+  @ApiOperation({ summary: 'Get AI CV evaluation result' })
+  getCvEvaluation(
+    @Param('cvDocumentId') cvDocumentId: string,
+    @Query('requestId') requestId?: string,
+  ) {
+    return firstValueFrom(
+      this.recruitingClient.send('evaluations.get_cv_evaluation', {
+        cvDocumentId,
+        requestId,
+      }),
+    );
   }
 
   @Get('evaluations/:id')

@@ -10,16 +10,22 @@ import { ForgotPassword } from './pages/ForgotPassword';
 import { ResetPassword } from './pages/ResetPassword';
 import { AccountSettings } from './pages/AccountSettings';
 import { Unauthorized } from './pages/Unauthorized';
-import { AdminDashboard } from './features/admin/pages/AdminDashboard';
-import { AdminApprovalQueue } from './features/admin/pages/AdminApprovalQueue';
-import { AdminAllRequests } from './features/admin/pages/AdminAllRequests';
-import { AdminInterviewResults } from './features/admin/pages/AdminInterviewResults';
-import { AdminSettings } from './features/admin/pages/AdminSettings';
-import { AdminUsers } from './features/admin/pages/AdminUsers';
-import { AdminAnnualReport } from './features/admin/pages/AdminAnnualReport';
-import { AdminDeptStats } from './features/admin/pages/AdminDeptStats';
-import { AdminApiMonitor } from './features/admin/pages/AdminApiMonitor';
-import { AdminMaintenance } from './features/admin/pages/AdminMaintenance';
+import {
+  AdminDashboard,
+  AdminUsers,
+  AdminApiMonitor,
+  AdminMaintenance,
+  AdminSettings,
+} from './features/admin/pages';
+import {
+  BossDashboard,
+  BossApprovalQueue,
+  BossAllRequests,
+  BossInterviewResults,
+  BossAnnualReport,
+  BossDeptStats,
+  BossSettings,
+} from './features/boss/pages';
 import { DeptHeadCreateRequest } from './features/dept-head/pages/DeptHeadCreateRequest';
 import { DeptHeadDashboard } from './features/dept-head/pages/DeptHeadDashboard';
 import { DeptHeadInterviewFeedback } from './features/dept-head/pages/DeptHeadInterviewFeedback';
@@ -125,7 +131,7 @@ export function App() {
             element={
               <ProtectedRoute allowedRoles={[UserRole.BOSS, UserRole.ADMIN]}>
                 <Layout>
-                  <AdminDashboard />
+                  <BossDashboard />
                 </Layout>
               </ProtectedRoute>
             }
@@ -135,7 +141,7 @@ export function App() {
             element={
               <ProtectedRoute allowedRoles={[UserRole.BOSS, UserRole.ADMIN]}>
                 <Layout>
-                  <AdminApprovalQueue />
+                  <BossApprovalQueue />
                 </Layout>
               </ProtectedRoute>
             }
@@ -145,7 +151,7 @@ export function App() {
             element={
               <ProtectedRoute allowedRoles={[UserRole.BOSS, UserRole.ADMIN]}>
                 <Layout>
-                  <AdminAllRequests />
+                  <BossAllRequests />
                 </Layout>
               </ProtectedRoute>
             }
@@ -155,7 +161,7 @@ export function App() {
             element={
               <ProtectedRoute allowedRoles={[UserRole.BOSS, UserRole.ADMIN]}>
                 <Layout>
-                  <AdminInterviewResults />
+                  <BossInterviewResults />
                 </Layout>
               </ProtectedRoute>
             }
@@ -165,7 +171,7 @@ export function App() {
             element={
               <ProtectedRoute allowedRoles={[UserRole.BOSS, UserRole.ADMIN]}>
                 <Layout>
-                  <AdminSettings />
+                  <BossSettings />
                 </Layout>
               </ProtectedRoute>
             }
@@ -175,7 +181,7 @@ export function App() {
             element={
               <ProtectedRoute allowedRoles={[UserRole.BOSS, UserRole.ADMIN]}>
                 <Layout>
-                  <AdminAnnualReport />
+                  <BossAnnualReport />
                 </Layout>
               </ProtectedRoute>
             }
@@ -190,7 +196,7 @@ export function App() {
             element={
               <ProtectedRoute allowedRoles={[UserRole.BOSS, UserRole.ADMIN]}>
                 <Layout>
-                  <AdminDeptStats />
+                  <BossDeptStats />
                 </Layout>
               </ProtectedRoute>
             }
@@ -203,7 +209,7 @@ export function App() {
             element={
               <ProtectedRoute allowedRoles={[UserRole.WEB_ADMIN, UserRole.ADMIN]}>
                 <Layout>
-                  <AdminApiMonitor />
+                  <AdminDashboard />
                 </Layout>
               </ProtectedRoute>
             }

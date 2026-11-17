@@ -1,5 +1,6 @@
 import { Injectable, HttpStatus } from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
+import { evaluateCvWithAi } from '@wr/ai';
 import {
   isHrRole,
   JobPostingStatus,
@@ -195,7 +196,7 @@ export class ApplicationsService {
 
     const collectedById = await this.resolveCollectedById(payload);
 
-    return this.prisma.application.create({
+    const application = await this.prisma.application.create({
       data: {
         requestId,
         candidateId: candidateProfile.id,
@@ -204,6 +205,72 @@ export class ApplicationsService {
       },
       include: this.applicationInclude,
     });
+
+    if (candidateProfile.cvDocuments?.[0]?.id) {
+      this.triggerAiEvaluation(candidateProfile.cvDocuments[0].id, requestId, request).catch(
+        (err) => console.warn('[Application AI Evaluation] failed:', err),
+      );
+    }
+
+    return application;
+  }
+
+  private async triggerAiEvaluation(cvId: string, requestId: string, request: any) {
+    try {
+      const cv = await this.prisma.candidateCV.findUnique({
+        where: { id: cvId },
+      });
+      if (!cv) return;
+
+      const structured = (cv.structuredData as Record<string, any>) || {};
+      const evalResult = await evaluateCvWithAi({
+        cvText: cv.rawText,
+        resume: structured.resume,
+        jobTitle: request.position || 'Vị trí ứng tuyển',
+        jobDescription: request.jobDescription,
+        skillRequirements: request.skillRequirements,
+        departmentName: request.department?.name,
+        urgency: request.urgency,
+      });
+
+      const nextData = {
+        ...structured,
+        evaluation: {
+          ...evalResult,
+          requestId,
+          jobTitle: request.position,
+        },
+      };
+
+      const nextStatus =
+        evalResult.recommendation === 'SHORTLISTED'
+          ? 'SHORTLISTED'
+          : evalResult.recommendation === 'REJECTED'
+            ? 'REJECTED'
+            : cv.screeningStatus;
+
+      await this.prisma.candidateCV.update({
+        where: { id: cvId },
+        data: {
+          structuredData: nextData as any,
+          screeningStatus: nextStatus,
+        },
+      });
+
+      if (evalResult.recommendation === 'SHORTLISTED') {
+        await this.prisma.application.updateMany({
+          where: { requestId, candidateId: cv.candidateId },
+          data: { status: 'SCREENING' },
+        });
+      } else if (evalResult.recommendation === 'REJECTED') {
+        await this.prisma.application.updateMany({
+          where: { requestId, candidateId: cv.candidateId },
+          data: { status: 'REJECTED' },
+        });
+      }
+    } catch (error) {
+      console.warn('Async AI evaluation error:', error);
+    }
   }
 
   async list(query: {

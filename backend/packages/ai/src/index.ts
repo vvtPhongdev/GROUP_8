@@ -6,7 +6,9 @@ export * from './matching/index';
 export * from './embedding';
 export * from './cv-parser';
 export * from './cv-extractor';
+export * from './cv-evaluator';
 export * from './candidate-template-parser';
+export * from './algorithmic-cv-parser';
 export * from './similarity';
 
 /**

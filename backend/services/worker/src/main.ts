@@ -1,6 +1,6 @@
 import { config } from 'dotenv';
 import { resolve } from 'path';
-config({ path: resolve(__dirname, '../../../.env') });
+config({ path: resolve(__dirname, '../../../../.env') });
 
 import { Queue, Worker } from 'bullmq';
 import { JOB_NAMES, QUEUE_NAMES } from '@wr/queue';
