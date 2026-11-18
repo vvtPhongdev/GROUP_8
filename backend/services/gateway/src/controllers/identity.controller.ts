@@ -907,7 +907,7 @@ export class IdentityController {
   // â”€â”€â”€ Users â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   @Get('users')
-  @Roles(UserRole.ADMIN, UserRole.WEB_ADMIN, UserRole.HR_LEADER, UserRole.DEPARTMENT_HEAD)
+  @Roles(UserRole.ADMIN, UserRole.WEB_ADMIN, UserRole.HR_LEADER, UserRole.DEPARTMENT_HEAD, UserRole.BOSS)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'List users with pagination and role filter' })
   async listUsers(@Query() query: ListUsersQueryDto, @CurrentUser() user: JwtPayload) {
@@ -1115,7 +1115,7 @@ export class IdentityController {
   // â”€â”€â”€ Organizations â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   @Post('organizations')
-  @Roles(UserRole.ADMIN, UserRole.WEB_ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.WEB_ADMIN, UserRole.BOSS)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create a new organization' })
   createOrganization(@Body() body: CreateOrganizationDto) {
@@ -1123,7 +1123,7 @@ export class IdentityController {
   }
 
   @Get('organizations')
-  @Roles(UserRole.ADMIN, UserRole.WEB_ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.WEB_ADMIN, UserRole.BOSS)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'List organizations' })
   listOrganizations() {
@@ -1131,7 +1131,7 @@ export class IdentityController {
   }
 
   @Get('organizations/:id')
-  @Roles(UserRole.ADMIN, UserRole.WEB_ADMIN, UserRole.DEPARTMENT_HEAD)
+  @Roles(UserRole.ADMIN, UserRole.WEB_ADMIN, UserRole.DEPARTMENT_HEAD, UserRole.BOSS)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get organization by ID' })
   getOrganization(@Param('id') id: string, @CurrentUser() user: JwtPayload) {
@@ -1142,7 +1142,7 @@ export class IdentityController {
   }
 
   @Patch('organizations/:id')
-  @Roles(UserRole.ADMIN, UserRole.WEB_ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.WEB_ADMIN, UserRole.BOSS)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update organization profile and settings' })
   updateOrganization(@Param('id') id: string, @Body() body: UpdateOrganizationDto) {
@@ -1152,7 +1152,7 @@ export class IdentityController {
   }
 
   @Patch('organizations/:id/settings')
-  @Roles(UserRole.ADMIN, UserRole.WEB_ADMIN, UserRole.DEPARTMENT_HEAD)
+  @Roles(UserRole.ADMIN, UserRole.WEB_ADMIN, UserRole.DEPARTMENT_HEAD, UserRole.BOSS)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update organization settings only' })
   async updateOrganizationSettings(
@@ -1181,7 +1181,7 @@ export class IdentityController {
   // â”€â”€â”€ Departments â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   @Post('departments')
-  @Roles(UserRole.ADMIN, UserRole.WEB_ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.WEB_ADMIN, UserRole.BOSS)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create a new department' })
   createDepartment(@Body() body: CreateDepartmentDto) {
@@ -1189,7 +1189,7 @@ export class IdentityController {
   }
 
   @Get('departments')
-  @Roles(UserRole.ADMIN, UserRole.WEB_ADMIN, UserRole.HR_LEADER, UserRole.DEPARTMENT_HEAD)
+  @Roles(UserRole.ADMIN, UserRole.WEB_ADMIN, UserRole.HR_LEADER, UserRole.DEPARTMENT_HEAD, UserRole.BOSS)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'List departments with organization filtering' })
   listDepartments(@Query() query: ListDepartmentsQueryDto, @CurrentUser() user: any) {
@@ -1204,7 +1204,7 @@ export class IdentityController {
   }
 
   @Get('departments/:id')
-  @Roles(UserRole.ADMIN, UserRole.WEB_ADMIN, UserRole.HR_LEADER, UserRole.DEPARTMENT_HEAD)
+  @Roles(UserRole.ADMIN, UserRole.WEB_ADMIN, UserRole.HR_LEADER, UserRole.DEPARTMENT_HEAD, UserRole.BOSS)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get department by ID' })
   getDepartment(@Param('id') id: string) {
@@ -1212,7 +1212,7 @@ export class IdentityController {
   }
 
   @Patch('departments/:id')
-  @Roles(UserRole.ADMIN, UserRole.WEB_ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.WEB_ADMIN, UserRole.BOSS)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update department details' })
   updateDepartment(@Param('id') id: string, @Body() body: UpdateDepartmentDto) {
@@ -1220,7 +1220,7 @@ export class IdentityController {
   }
 
   @Delete('departments/:id')
-  @Roles(UserRole.ADMIN, UserRole.WEB_ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.WEB_ADMIN, UserRole.BOSS)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Delete department' })
   deleteDepartment(@Param('id') id: string) {

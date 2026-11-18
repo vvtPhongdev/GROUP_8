@@ -507,7 +507,7 @@ export class RecruitingController {
   }
 
   @Get('recruitment-requests')
-  @Roles(UserRole.ADMIN, UserRole.HR_LEADER)
+  @Roles(UserRole.ADMIN, UserRole.HR_LEADER, UserRole.BOSS)
   @ApiOperation({ summary: 'List recruitment requests for admin/HR oversight' })
   listRecruitmentRequests(@Query() query: any, @CurrentUser() user: any) {
     const payload = { ...query, role: user.role, userId: user.sub };
@@ -530,7 +530,7 @@ export class RecruitingController {
   }
 
   @Get('recruitment-requests/:id')
-  @Roles(UserRole.ADMIN, UserRole.HR_LEADER, UserRole.DEPARTMENT_HEAD)
+  @Roles(UserRole.ADMIN, UserRole.HR_LEADER, UserRole.DEPARTMENT_HEAD, UserRole.BOSS)
   @ApiOperation({ summary: 'Get a recruitment request visible to the current user' })
   getRecruitmentRequest(@Param('id') id: string, @CurrentUser() user: any) {
     return firstValueFrom(
@@ -579,7 +579,7 @@ export class RecruitingController {
   }
 
   @Patch('recruitment-requests/:id/assign')
-  @Roles(UserRole.ADMIN, UserRole.HR_LEADER)
+  @Roles(UserRole.ADMIN, UserRole.HR_LEADER, UserRole.BOSS)
   @ApiOperation({ summary: 'Assign a recruitment request to an HR manager' })
   assignRecruitmentRequest(
     @Param('id') id: string,
@@ -613,7 +613,7 @@ export class RecruitingController {
   }
 
   @Patch('recruitment-requests/:id/request-changes')
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.BOSS)
   @ApiOperation({ summary: 'Request changes to an HR-forwarded recruitment request' })
   requestRecruitmentRequestChanges(
     @Param('id') id: string,
@@ -642,7 +642,7 @@ export class RecruitingController {
   }
 
   @Patch('recruitment-requests/:id/decision')
-  @Roles(UserRole.ADMIN, UserRole.HR_LEADER)
+  @Roles(UserRole.ADMIN, UserRole.HR_LEADER, UserRole.BOSS)
   @ApiOperation({ summary: 'Approve or reject a pending recruitment request' })
   decideRecruitmentRequest(
     @Param('id') id: string,
@@ -672,7 +672,7 @@ export class RecruitingController {
   }
 
   @Get('overall-plan/by-request/:requestId')
-  @Roles(UserRole.HR_LEADER, UserRole.ADMIN)
+  @Roles(UserRole.HR_LEADER, UserRole.ADMIN, UserRole.BOSS)
   @ApiOperation({ summary: 'Get the overall plan for a recruitment request' })
   getOverallPlanByRequest(@Param('requestId') requestId: string, @CurrentUser() user: any) {
     return firstValueFrom(
@@ -685,7 +685,7 @@ export class RecruitingController {
   }
 
   @Patch('overall-plan/:id/approve')
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.BOSS)
   @ApiOperation({ summary: 'Approve an overall recruitment plan' })
   approveOverallPlan(@Param('id') id: string, @CurrentUser('sub') userId: string) {
     return firstValueFrom(
@@ -712,7 +712,7 @@ export class RecruitingController {
   }
 
   @Patch('overall-plan/:id/reject')
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.BOSS)
   @ApiOperation({ summary: 'Reject an overall recruitment plan with revision notes' })
   rejectOverallPlan(
     @Param('id') id: string,
