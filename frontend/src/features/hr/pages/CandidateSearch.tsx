@@ -126,10 +126,22 @@ const extractSkills = (requirements: unknown): string[] => {
 };
 
 const getRankBadge = (rankIndex: number) => {
-  if (rankIndex === 0) return { label: '🥇 Rank 1', color: 'bg-amber-100 text-amber-800 border-amber-300' };
-  if (rankIndex === 1) return { label: '🥈 Rank 2', color: 'bg-slate-100 text-slate-800 border-slate-300' };
-  if (rankIndex === 2) return { label: '🥉 Rank 3', color: 'bg-orange-100 text-orange-800 border-orange-300' };
-  return { label: `#${rankIndex + 1}`, color: 'bg-gray-100 text-gray-700 border-gray-200' };
+  if (rankIndex === 0) return {
+    label: '🥇 Top 1',
+    color: 'bg-gradient-to-r from-amber-50 to-yellow-50 text-amber-900 border-amber-300 shadow-xs ring-1 ring-amber-400/30'
+  };
+  if (rankIndex === 1) return {
+    label: '🥈 Top 2',
+    color: 'bg-gradient-to-r from-slate-50 to-zinc-50 text-slate-800 border-slate-300 shadow-xs'
+  };
+  if (rankIndex === 2) return {
+    label: '🥉 Top 3',
+    color: 'bg-gradient-to-r from-orange-50 to-amber-50/50 text-orange-900 border-orange-300 shadow-xs'
+  };
+  return {
+    label: `#${rankIndex + 1}`,
+    color: 'bg-stone-100/80 text-stone-600 border-stone-200'
+  };
 };
 
 const getRecommendationBadge = (rec: RankedCandidate['aiRecommendation']) => {
@@ -223,14 +235,14 @@ export const CandidateSearch: React.FC = () => {
         const postings: any[] = Array.isArray(postingsRes)
           ? postingsRes
           : Array.isArray(postingsRes?.data)
-          ? postingsRes.data
-          : [];
+            ? postingsRes.data
+            : [];
 
         const requests: any[] = Array.isArray(requestsRes)
           ? requestsRes
           : Array.isArray(requestsRes?.data)
-          ? requestsRes.data
-          : [];
+            ? requestsRes.data
+            : [];
 
         const requestMap = new Map<string, any>();
         requests.forEach((r) => {
@@ -319,8 +331,8 @@ export const CandidateSearch: React.FC = () => {
       const list: ApplicationItem[] = Array.isArray(data)
         ? data
         : Array.isArray(data?.data)
-        ? data.data
-        : [];
+          ? data.data
+          : [];
       setApplications(list);
     } catch (err) {
       console.warn('[CandidateSearch] Failed to load applications:', err);
@@ -699,9 +711,8 @@ export const CandidateSearch: React.FC = () => {
 
               {/* JD Body */}
               <div
-                className={`mt-2 text-xs leading-relaxed text-slate-ink whitespace-pre-line ${
-                  showFullJd ? '' : 'line-clamp-3'
-                }`}
+                className={`mt-2 text-xs leading-relaxed text-slate-ink whitespace-pre-line ${showFullJd ? '' : 'line-clamp-3'
+                  }`}
               >
                 {activeCampaign.jobDescription}
               </div>
@@ -753,41 +764,37 @@ export const CandidateSearch: React.FC = () => {
             <span className="text-xs font-medium text-slate-ink">Filter:</span>
             <button
               onClick={() => setStatusFilter('ALL')}
-              className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors ${
-                statusFilter === 'ALL'
+              className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors ${statusFilter === 'ALL'
                   ? 'bg-deep-charcoal text-white'
                   : 'border border-border-warm bg-white text-slate-ink hover:bg-stone-50'
-              }`}
+                }`}
             >
               All ({rankedCandidates.length})
             </button>
             <button
               onClick={() => setStatusFilter('STRONG_MATCH')}
-              className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors ${
-                statusFilter === 'STRONG_MATCH'
+              className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors ${statusFilter === 'STRONG_MATCH'
                   ? 'bg-emerald-600 text-white'
                   : 'border border-border-warm bg-white text-slate-ink hover:bg-stone-50'
-              }`}
+                }`}
             >
               Strong Match ({rankedCandidates.filter((c) => c.aiRecommendation === 'STRONG_MATCH').length})
             </button>
             <button
               onClick={() => setStatusFilter('CONSIDER')}
-              className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors ${
-                statusFilter === 'CONSIDER'
+              className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors ${statusFilter === 'CONSIDER'
                   ? 'bg-amber-600 text-white'
                   : 'border border-border-warm bg-white text-slate-ink hover:bg-stone-50'
-              }`}
+                }`}
             >
               Consider ({rankedCandidates.filter((c) => c.aiRecommendation === 'CONSIDER').length})
             </button>
             <button
               onClick={() => setStatusFilter('SHORTLISTED')}
-              className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors ${
-                statusFilter === 'SHORTLISTED'
+              className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors ${statusFilter === 'SHORTLISTED'
                   ? 'bg-indigo-600 text-white'
                   : 'border border-border-warm bg-white text-slate-ink hover:bg-stone-50'
-              }`}
+                }`}
             >
               Shortlisted ({rankedCandidates.filter((c) => c.applicationStatus === 'SHORTLISTED' || c.applicationStatus === 'INTERVIEWING').length})
             </button>
@@ -889,15 +896,14 @@ export const CandidateSearch: React.FC = () => {
                         </div>
                         <div className="mt-1 h-2 w-full overflow-hidden rounded-full bg-stone-200">
                           <div
-                            className={`h-full transition-all duration-500 ${
-                              cand.aiScore >= 75
+                            className={`h-full transition-all duration-500 ${cand.aiScore >= 75
                                 ? 'bg-emerald-500'
                                 : cand.aiScore >= 50
-                                ? 'bg-amber-500'
-                                : cand.aiScore > 0
-                                ? 'bg-rose-500'
-                                : 'bg-gray-300'
-                            }`}
+                                  ? 'bg-amber-500'
+                                  : cand.aiScore > 0
+                                    ? 'bg-rose-500'
+                                    : 'bg-gray-300'
+                              }`}
                             style={{ width: `${cand.aiScore}%` }}
                           />
                         </div>
@@ -1011,8 +1017,8 @@ export const CandidateSearch: React.FC = () => {
                     {inspectingCandidate.aiRecommendation === 'STRONG_MATCH'
                       ? '✓ Strong match for recruitment requirements'
                       : inspectingCandidate.aiRecommendation === 'CONSIDER'
-                      ? '⚠️ Meets baseline requirements, further review needed'
-                      : '✗ Does not meet core requirements'}
+                        ? '⚠️ Meets baseline requirements, further review needed'
+                        : '✗ Does not meet core requirements'}
                   </div>
                 </div>
 
@@ -1197,8 +1203,8 @@ export const CandidateSearch: React.FC = () => {
                     {aiPopup.result.recommendation === 'STRONG_MATCH'
                       ? 'STRONG MATCH'
                       : aiPopup.result.recommendation === 'CONSIDER'
-                      ? 'CONSIDER'
-                      : 'NOT QUALIFIED'}
+                        ? 'CONSIDER'
+                        : 'NOT QUALIFIED'}
                   </span>
                 </div>
                 <div className="flex items-center gap-1.5 text-[11px] text-teal-800 bg-white/70 rounded-lg p-2 border border-teal-100">

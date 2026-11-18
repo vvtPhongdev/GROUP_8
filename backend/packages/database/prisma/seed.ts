@@ -36,6 +36,27 @@ const ids = {
   jobPosting: '00000000-0000-4000-8000-000000000903',
   notification: '00000000-0000-4000-8000-000000000904',
   emailLog: '00000000-0000-4000-8000-000000000905',
+  sampleReqAI: '00000000-0000-4000-8000-000000000304',
+  sampleReqDesign: '00000000-0000-4000-8000-000000000305',
+  sampleReqDevOps: '00000000-0000-4000-8000-000000000306',
+  sampleReqMarketing: '00000000-0000-4000-8000-000000000307',
+  sampleReqSales: '00000000-0000-4000-8000-000000000308',
+  sampleReqFrontend: '00000000-0000-4000-8000-000000000309',
+  sampleReqRecruiter: '00000000-0000-4000-8000-000000000310',
+  sampleJobAI: '00000000-0000-4000-8000-000000000914',
+  sampleJobDesign: '00000000-0000-4000-8000-000000000915',
+  sampleJobDevOps: '00000000-0000-4000-8000-000000000916',
+  sampleJobMarketing: '00000000-0000-4000-8000-000000000917',
+  sampleJobSales: '00000000-0000-4000-8000-000000000918',
+  sampleJobFrontend: '00000000-0000-4000-8000-000000000919',
+  sampleJobRecruiter: '00000000-0000-4000-8000-000000000920',
+  samplePlanAI: '00000000-0000-4000-8000-000000000404',
+  samplePlanDesign: '00000000-0000-4000-8000-000000000405',
+  samplePlanDevOps: '00000000-0000-4000-8000-000000000406',
+  samplePlanMarketing: '00000000-0000-4000-8000-000000000407',
+  samplePlanSales: '00000000-0000-4000-8000-000000000408',
+  samplePlanFrontend: '00000000-0000-4000-8000-000000000409',
+  samplePlanRecruiter: '00000000-0000-4000-8000-000000000410',
 };
 
 const legacySeedEmails = [
@@ -677,6 +698,231 @@ async function main() {
     },
   });
 
+  const additionalJobs = [
+    {
+      reqId: ids.sampleReqAI,
+      jobId: ids.sampleJobAI,
+      planId: ids.samplePlanAI,
+      departmentId: engineering.id,
+      position: 'AI & Machine Learning Engineer',
+      headcount: 2,
+      urgency: 'HIGH',
+      description:
+        'Tham gia phát triển các mô hình AI bóc tách thông tin CV tự động (OCR, NLP) và tối ưu hóa hệ thống tìm kiếm vector ngữ nghĩa (Semantic Search với pgvector và ONNX runtime). Bạn sẽ làm việc trực tiếp với các mô hình ngôn ngữ lớn (Gemini API) và xây dựng pipeline xử lý dữ liệu quy mô lớn.',
+      requirements: {
+        skills: ['Python', 'PyTorch', 'Transformers', 'FastAPI', 'ONNX', 'pgvector', 'Docker', 'PostgreSQL'],
+        experienceYears: 3,
+        education: "Bachelor's or Master's in Computer Science, AI or related field",
+        salaryRange: '40,000,000 - 65,000,000 VND',
+        location: 'Ho Chi Minh City / Hybrid',
+        benefits: ['Lương tháng 13 + Thưởng hiệu suất dự án', 'Gói bảo hiểm sức khỏe quốc tế cao cấp', 'Cấp MacBook Pro M3 Max', 'Trợ cấp học tập và chứng chỉ AI quốc tế'],
+      },
+      justification: 'Mở rộng tính năng tuyển dụng thông minh bằng AI cho toàn bộ nền tảng RMS.',
+    },
+    {
+      reqId: ids.sampleReqDesign,
+      jobId: ids.sampleJobDesign,
+      planId: ids.samplePlanDesign,
+      departmentId: marketing.id,
+      position: 'Senior UI/UX Product Designer',
+      headcount: 1,
+      urgency: 'MEDIUM',
+      description:
+        'Chịu trách nhiệm thiết kế trải nghiệm người dùng (UX) và giao diện trực quan (UI) cho hệ thống tuyển dụng đa nền tảng. Bạn sẽ xây dựng và duy trì Design System hoàn chỉnh, phỏng vấn trực tiếp người dùng (HR, Lãnh đạo, Trưởng phòng) để tối ưu hoá từng quy trình làm việc.',
+      requirements: {
+        skills: ['Figma', 'UI/UX Design', 'Design Systems', 'User Research', 'Wireframing', 'Prototyping', 'TailwindCSS'],
+        experienceYears: 4,
+        education: "Bachelor's in Design, Human-Computer Interaction or equivalent experience",
+        salaryRange: '32,000,000 - 48,000,000 VND',
+        location: 'Ho Chi Minh City / Remote',
+        benefits: ['Môi trường làm việc quốc tế năng động', 'Làm việc từ xa linh hoạt (Hybrid / Remote)', '15 ngày phép năm có lương', 'Team building và du lịch hàng năm tại resort 5 sao'],
+      },
+      justification: 'Nâng cấp toàn bộ trải nghiệm người dùng và bộ nhận diện thương hiệu số cho hệ thống.',
+    },
+    {
+      reqId: ids.sampleReqDevOps,
+      jobId: ids.sampleJobDevOps,
+      planId: ids.samplePlanDevOps,
+      departmentId: engineering.id,
+      position: 'Lead DevOps & Cloud Platform Engineer',
+      headcount: 1,
+      urgency: 'HIGH',
+      description:
+        'Chủ trì kiến trúc hạ tầng đám mây (AWS / GCP), tự động hóa toàn bộ quy trình CI/CD và điều phối cụm vi dịch vụ Microservices bằng Kubernetes & Docker. Đảm bảo hệ thống đạt chuẩn sẵn sàng cao (High Availability), giám sát hiệu năng với Prometheus, Grafana và Pino Logger.',
+      requirements: {
+        skills: ['AWS', 'Kubernetes', 'Docker', 'Terraform', 'CI/CD', 'PostgreSQL', 'Redis', 'Linux', 'Security'],
+        experienceYears: 5,
+        education: "Bachelor's in Computer Science, Software Engineering or related disciplines",
+        salaryRange: '45,000,000 - 70,000,000 VND',
+        location: 'Ha Noi / Ho Chi Minh / Remote',
+        benefits: ['Mức đãi ngộ cạnh tranh top đầu thị trường', 'Thưởng gia nhập (Sign-on Bonus)', 'Tài trợ ngân sách thi chứng chỉ AWS/CKA', 'Khám sức khỏe định kỳ VIP hàng năm'],
+      },
+      justification: 'Đảm bảo hạ tầng vận hành ổn định và an toàn thông tin khi lượng truy cập tăng trưởng nhanh.',
+    },
+    {
+      reqId: ids.sampleReqMarketing,
+      jobId: ids.sampleJobMarketing,
+      planId: ids.samplePlanMarketing,
+      departmentId: marketing.id,
+      position: 'Product Marketing Manager (B2B SaaS)',
+      headcount: 1,
+      urgency: 'MEDIUM',
+      description:
+        'Dẫn dắt chiến lược Go-To-Market cho các giải pháp phần mềm tuyển dụng doanh nghiệp. Xây dựng thông điệp sản phẩm, tài liệu giải pháp, phối hợp cùng bộ phận Sales tổ chức hội thảo chuyên đề và các chiến dịch thu hút khách hàng B2B.',
+      requirements: {
+        skills: ['Product Marketing', 'B2B SaaS', 'Content Strategy', 'Market Research', 'SEO', 'HubSpot', 'Google Analytics'],
+        experienceYears: 3,
+        education: "Bachelor's in Marketing, Business Administration or Communications",
+        salaryRange: '28,000,000 - 42,000,000 VND',
+        location: 'Ho Chi Minh City',
+        benefits: ['Hoa hồng theo hiệu quả tăng trưởng khách hàng', 'Môi trường khuyến khích sáng tạo và thử nghiệm ý tưởng mới', 'Phụ cấp ăn trưa và gửi xe miễn phí', 'Các khóa đào tạo chuyên sâu về B2B Marketing'],
+      },
+      justification: 'Mở rộng thị phần sản phẩm tới các doanh nghiệp quy mô vừa và lớn.',
+    },
+    {
+      reqId: ids.sampleReqSales,
+      jobId: ids.sampleJobSales,
+      planId: ids.samplePlanSales,
+      departmentId: sales.id,
+      position: 'Enterprise Account Executive (SaaS)',
+      headcount: 2,
+      urgency: 'HIGH',
+      description:
+        'Tìm kiếm, tiếp cận và chốt hợp đồng cung cấp giải pháp quản trị tuyển dụng RMS cho các tập đoàn và doanh nghiệp lớn. Làm việc trực tiếp với Giám đốc Nhân sự (CHRO) và Lãnh đạo cấp cao (C-Level) để tư vấn chuyển đổi số quy trình tuyển dụng.',
+      requirements: {
+        skills: ['Enterprise Sales', 'B2B SaaS', 'CRM', 'Contract Negotiation', 'Lead Generation', 'Solution Selling'],
+        experienceYears: 4,
+        education: "Bachelor's in Business, Economics, Information Technology or related fields",
+        salaryRange: '28,000,000 - 45,000,000 VND + Thưởng doanh số hấp dẫn',
+        location: 'Ho Chi Minh City / Ha Noi',
+        benefits: ['Thu nhập không giới hạn (Lương cứng + Hoa hồng dự án)', 'Thưởng quý, thưởng nóng theo từng hợp đồng chốt thành công', 'Cung cấp laptop, điện thoại và chi phí công tác', 'Lộ trình thăng tiến lên Sales Director rõ ràng'],
+      },
+      justification: 'Đẩy mạnh doanh thu và mở rộng tập khách hàng doanh nghiệp chiến lược.',
+    },
+    {
+      reqId: ids.sampleReqFrontend,
+      jobId: ids.sampleJobFrontend,
+      planId: ids.samplePlanFrontend,
+      departmentId: engineering.id,
+      position: 'Frontend Engineer (React 19 & TypeScript)',
+      headcount: 2,
+      urgency: 'MEDIUM',
+      description:
+        'Phát triển giao diện web hiện đại, tốc độ cao với React 19, TypeScript và Tailwind CSS. Xây dựng các tính năng tương tác phong phú: bảng kéo thả Gantt, thông báo Server-Sent Events thời gian thực, và giao diện đánh giá ứng viên mượt mà.',
+      requirements: {
+        skills: ['React', 'TypeScript', 'TailwindCSS', 'Vite', 'HTML5', 'CSS3', 'REST API', 'Git'],
+        experienceYears: 2,
+        education: "Bachelor's in Computer Science, Software Engineering or equivalent experience",
+        salaryRange: '22,000,000 - 35,000,000 VND',
+        location: 'Ho Chi Minh City / Hybrid',
+        benefits: ['Được làm việc với tech-stack công nghệ mới nhất (React 19, Turborepo)', 'Trợ cấp thiết bị làm việc 5,000,000 VND', 'Trà, cà phê, snack miễn phí tại văn phòng', 'Môi trường làm việc cởi mở, không phân cấp cứng nhắc'],
+      },
+      justification: 'Tăng cường nguồn lực phát triển các tính năng giao diện mới cho người dùng.',
+    },
+    {
+      reqId: ids.sampleReqRecruiter,
+      jobId: ids.sampleJobRecruiter,
+      planId: ids.samplePlanRecruiter,
+      departmentId: sales.id,
+      position: 'Technical Talent Acquisition Specialist',
+      headcount: 1,
+      urgency: 'MEDIUM',
+      description:
+        'Tìm kiếm, kết nối và tuyển dụng các kỹ sư công nghệ tài năng cho hệ thống. Phối hợp chặt chẽ với Trưởng phòng Kỹ thuật để hiểu rõ yêu cầu chuyên môn, điều phối lịch phỏng vấn và hỗ trợ ứng viên trong suốt quá trình tuyển dụng.',
+      requirements: {
+        skills: ['Technical Sourcing', 'IT Recruitment', 'Talent Acquisition', 'LinkedIn Recruiter', 'Candidate Screening', 'Interviewing'],
+        experienceYears: 2,
+        education: "Bachelor's in Human Resources, Business, English or related fields",
+        salaryRange: '20,000,000 - 32,000,000 VND',
+        location: 'Ho Chi Minh City',
+        benefits: ['Thưởng tuyển dụng thành công theo từng vị trí (Placement Bonus)', 'Được đào tạo bài bản về kiến thức công nghệ thông tin', 'Thời gian làm việc linh hoạt, hỗ trợ làm việc kết hợp (Hybrid)', 'Gói bảo hiểm sức khỏe cá nhân'],
+      },
+      justification: 'Đảm bảo tiến độ thu hút nhân tài cho các dự án công nghệ trọng điểm.',
+    },
+  ];
+
+  for (const job of additionalJobs) {
+    const creatorId =
+      job.departmentId === marketing.id ? deptHeadMarketing.id : deptHeadEngineering.id;
+
+    await prisma.recruitmentRequest.upsert({
+      where: { id: job.reqId },
+      update: {
+        departmentId: job.departmentId,
+        createdById: creatorId,
+        position: job.position,
+        headcount: job.headcount,
+        jobDescription: job.description,
+        skillRequirements: job.requirements as object,
+        justification: job.justification,
+        urgency: job.urgency,
+        status: 'APPROVED',
+        reviewedById: hrManager.id,
+        approvedById: admin.id,
+      },
+      create: {
+        id: job.reqId,
+        departmentId: job.departmentId,
+        createdById: creatorId,
+        position: job.position,
+        headcount: job.headcount,
+        jobDescription: job.description,
+        skillRequirements: job.requirements as object,
+        justification: job.justification,
+        urgency: job.urgency,
+        status: 'APPROVED',
+        reviewedById: hrManager.id,
+        approvedById: admin.id,
+      },
+    });
+
+    const plan = await prisma.overallPlan.upsert({
+      where: { requestId: job.reqId },
+      update: {
+        id: job.planId,
+        startDate: daysFromNow(-5),
+        endDate: daysFromNow(40),
+        status: 'APPROVED',
+        createdById: hrManager.id,
+        approvedById: admin.id,
+      },
+      create: {
+        id: job.planId,
+        requestId: job.reqId,
+        startDate: daysFromNow(-5),
+        endDate: daysFromNow(40),
+        status: 'APPROVED',
+        createdById: hrManager.id,
+        approvedById: admin.id,
+      },
+    });
+
+    await prisma.jobPosting.upsert({
+      where: { requestId: job.reqId },
+      update: {
+        id: job.jobId,
+        title: job.position,
+        description: job.description,
+        requirements: job.requirements as object,
+        visibility: 'PUBLIC',
+        status: 'PUBLISHED',
+        startDate: daysFromNow(-5),
+        expireDate: daysFromNow(45),
+      },
+      create: {
+        id: job.jobId,
+        requestId: job.reqId,
+        title: job.position,
+        description: job.description,
+        requirements: job.requirements as object,
+        visibility: 'PUBLIC',
+        status: 'PUBLISHED',
+        startDate: daysFromNow(-5),
+        expireDate: daysFromNow(45),
+      },
+    });
+  }
+
   for (let index = 0; index < candidateProfiles.length; index += 1) {
     const candidate = candidateProfiles[index];
     const filePath = resolve(FIXTURE_DIR, candidate.fileName);
@@ -745,6 +991,54 @@ async function main() {
       `[${sampleEmbedding(index).join(',')}]`,
       candidate.embeddingId,
     );
+  }
+
+  const extraApplications = [
+    {
+      id: '00000000-0000-4000-8000-000000000651',
+      requestId: ids.sampleReqAI,
+      candidateId: candidateProfiles[1].profile.id,
+      status: 'SHORTLISTED',
+      collectedById: hrRecruiter.id,
+    },
+    {
+      id: '00000000-0000-4000-8000-000000000652',
+      requestId: ids.sampleReqDevOps,
+      candidateId: candidateProfiles[2].profile.id,
+      status: 'INTERVIEWING',
+      collectedById: hrRecruiter.id,
+    },
+    {
+      id: '00000000-0000-4000-8000-000000000653',
+      requestId: ids.sampleReqDesign,
+      candidateId: candidateProfiles[3].profile.id,
+      status: 'SCREENING',
+      collectedById: hrRecruiter.id,
+    },
+    {
+      id: '00000000-0000-4000-8000-000000000654',
+      requestId: ids.sampleReqMarketing,
+      candidateId: candidateProfiles[4].profile.id,
+      status: 'SUBMITTED',
+      collectedById: hrRecruiter.id,
+    },
+  ];
+
+  for (const app of extraApplications) {
+    await prisma.application.upsert({
+      where: {
+        requestId_candidateId: {
+          requestId: app.requestId,
+          candidateId: app.candidateId,
+        },
+      },
+      update: {
+        id: app.id,
+        status: app.status,
+        collectedById: app.collectedById,
+      },
+      create: app,
+    });
   }
 
   const [alex, priya, tomas] = candidateProfiles;
