@@ -825,7 +825,7 @@ export class RecruitingController {
   }
 
   @Get('reports/admin-dashboard')
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.BOSS)
   @ApiOperation({ summary: 'Get admin dashboard overview' })
   getAdminDashboard() {
     return firstValueFrom(this.recruitingClient.send('recruiting.admin_dashboard', {}));
@@ -1277,7 +1277,7 @@ export class RecruitingController {
   // â”€â”€â”€ Reports â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   @Get('reports/annual')
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.BOSS)
   @ApiOperation({ summary: 'Get annual recruitment report' })
   getAnnualReport(@Query('year') year?: string) {
     const parsedYear = year ? parseInt(year, 10) : new Date().getFullYear();
@@ -1287,7 +1287,7 @@ export class RecruitingController {
   }
 
   @Get('reports/departments')
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.BOSS)
   @ApiOperation({ summary: 'Get department recruitment statistics' })
   getDepartmentStats(@Query('range') range?: '30d' | 'quarter' | 'year') {
     return firstValueFrom(
@@ -1298,7 +1298,7 @@ export class RecruitingController {
   }
 
   @Get('reports/department/:id')
-  @Roles(UserRole.ADMIN, UserRole.DEPARTMENT_HEAD)
+  @Roles(UserRole.ADMIN, UserRole.DEPARTMENT_HEAD, UserRole.BOSS)
   @ApiOperation({ summary: 'Get department recruitment report' })
   getDepartmentReport(@Param('id') id: string, @CurrentUser() user: any) {
     return firstValueFrom(
@@ -1311,14 +1311,14 @@ export class RecruitingController {
   }
 
   @Get('reports/time-to-hire')
-  @Roles(UserRole.ADMIN, UserRole.HR_LEADER)
+  @Roles(UserRole.ADMIN, UserRole.HR_LEADER, UserRole.BOSS)
   @ApiOperation({ summary: 'Get time-to-hire metrics report' })
   getTimeToHireReport() {
     return firstValueFrom(this.recruitingClient.send('recruiting.time_to_hire', {}));
   }
 
   @Get('reports/pipeline')
-  @Roles(UserRole.ADMIN, UserRole.HR_LEADER)
+  @Roles(UserRole.ADMIN, UserRole.HR_LEADER, UserRole.BOSS)
   @ApiOperation({ summary: 'Get recruitment pipeline overview' })
   getPipelineOverview() {
     return firstValueFrom(this.recruitingClient.send('recruiting.pipeline_overview', {}));
@@ -1363,7 +1363,7 @@ export class RecruitingController {
   }
 
   @Get('reports/annual/export')
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.BOSS)
   @ApiOperation({ summary: 'Export annual recruitment report to CSV or PDF' })
   async exportAnnualReport(
     @Res() res: any,
